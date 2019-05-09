@@ -1,9 +1,9 @@
 //
 //  AppDelegate.swift
-//  TimePresence
+//  TaskManager
 //
-//  Created by Nour  on 5/6/19.
-//  Copyright © 2019 Nour . All rights reserved.
+//  Created by Nour  on 6/2/18.
+//  Copyright © 2018 NourAraar. All rights reserved.
 //
 
 import UIKit
@@ -14,8 +14,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        LocationHelper.shared.startUpdateLocation()
+        AppConfig.setTabBarStyle()
         return true
     }
 

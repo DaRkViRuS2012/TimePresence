@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  URLSViewController.swift
 //  TimePresence
 //
 //  Created by Nour  on 5/6/19.
@@ -8,13 +8,12 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class URLSViewController: AbstractController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        // Do any additional setup after loading the view.
     }
 
-
 }
-
