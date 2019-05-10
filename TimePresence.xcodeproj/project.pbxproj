@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		141EAC0F2280BD5500A7031D /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141EAC0E2280BD5500A7031D /* Service.swift */; };
 		14268476228487DB006D6FDD /* DropDownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14268475228487DA006D6FDD /* DropDownViewController.swift */; };
+		146BDAD622858BCB00F3302D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146BDAD522858BCB00F3302D /* SettingsViewController.swift */; };
 		1472EE63228033530038BBCB /* TaskTypesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1472EE042280333F0038BBCB /* TaskTypesViewController.swift */; };
 		1472EE64228033530038BBCB /* UIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1472EE052280333F0038BBCB /* UIApplication.swift */; };
 		1472EE65228033530038BBCB /* SocialManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1472EE062280333F0038BBCB /* SocialManager.swift */; };
@@ -99,6 +100,7 @@
 		1472EEBD228033530038BBCB /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1472EE62228033520038BBCB /* HomeViewController.swift */; };
 		1472EEC922804A950038BBCB /* NewURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1472EEC822804A950038BBCB /* NewURLViewController.swift */; };
 		1472EECB22804AAB0038BBCB /* URLSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1472EECA22804AAB0038BBCB /* URLSViewController.swift */; };
+		14C6B1672284AE7B006932F4 /* UIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C6B1662284AE7B006932F4 /* UIButton.swift */; };
 		14FE6610228477D700E77425 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14FE660F228477D700E77425 /* LaunchScreen.storyboard */; };
 		A0F8E0F3A56DC3C0FFA1B92E /* Pods_TimePresence.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 325734C0CE3F4D06089A763F /* Pods_TimePresence.framework */; };
 /* End PBXBuildFile section */
@@ -106,6 +108,7 @@
 /* Begin PBXFileReference section */
 		141EAC0E2280BD5500A7031D /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		14268475228487DA006D6FDD /* DropDownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDownViewController.swift; sourceTree = "<group>"; };
+		146BDAD522858BCB00F3302D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		1472EDEE228029C80038BBCB /* TimePresence.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimePresence.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1472EE032280333E0038BBCB /* TimePresence-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TimePresence-Bridging-Header.h"; sourceTree = "<group>"; };
 		1472EE042280333F0038BBCB /* TaskTypesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTypesViewController.swift; sourceTree = "<group>"; };
@@ -199,6 +202,7 @@
 		1472EE62228033520038BBCB /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1472EEC822804A950038BBCB /* NewURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewURLViewController.swift; sourceTree = "<group>"; };
 		1472EECA22804AAB0038BBCB /* URLSViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSViewController.swift; sourceTree = "<group>"; };
+		14C6B1662284AE7B006932F4 /* UIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButton.swift; sourceTree = "<group>"; };
 		14FE660F228477D700E77425 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		325734C0CE3F4D06089A763F /* Pods_TimePresence.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TimePresence.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A066B047FE2A9B6D2617B783 /* Pods-TimePresence.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TimePresence.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TimePresence/Pods-TimePresence.debug.xcconfig"; sourceTree = "<group>"; };
@@ -314,6 +318,7 @@
 				1472EE21228033420038BBCB /* Common+Extensions.swift */,
 				1472EE37228033470038BBCB /* XUILabel.swift */,
 				1472EE1A228033420038BBCB /* XUITextField.swift */,
+				14C6B1662284AE7B006932F4 /* UIButton.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -378,6 +383,7 @@
 				1472EE62228033520038BBCB /* HomeViewController.swift */,
 				1472EEC822804A950038BBCB /* NewURLViewController.swift */,
 				1472EECA22804AAB0038BBCB /* URLSViewController.swift */,
+				146BDAD522858BCB00F3302D /* SettingsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -613,6 +619,7 @@
 				1472EEA6228033530038BBCB /* FireBaseManager.swift in Sources */,
 				1472EE96228033530038BBCB /* TimerViewController.swift in Sources */,
 				1472EEB2228033530038BBCB /* UIViewController.swift in Sources */,
+				14C6B1672284AE7B006932F4 /* UIButton.swift in Sources */,
 				1472EE6A228033530038BBCB /* UISegmentedControl+Extensions.swift in Sources */,
 				1472EEB0228033530038BBCB /* WelcomeViewController.swift in Sources */,
 				1472EE87228033530038BBCB /* GradiantView.swift in Sources */,
@@ -633,6 +640,7 @@
 				1472EE82228033530038BBCB /* Array+Extensions.swift in Sources */,
 				1472EE99228033530038BBCB /* TwoTextFieldsViewController.swift in Sources */,
 				1472EE85228033530038BBCB /* Location.swift in Sources */,
+				146BDAD622858BCB00F3302D /* SettingsViewController.swift in Sources */,
 				1472EE81228033530038BBCB /* Collection.swift in Sources */,
 				1472EE95228033530038BBCB /* XUILabel.swift in Sources */,
 				1472EE6D228033530038BBCB /* DateHelper.swift in Sources */,

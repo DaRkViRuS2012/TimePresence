@@ -164,7 +164,7 @@ class DropDownViewController<T:BaseModel>: AbstractController,UITableViewDataSou
         UIApplication.visibleViewController()?.present(self, animated: true, completion: nil)
     }
     
-    override func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         print("clicked")
         return true
     }
@@ -195,9 +195,9 @@ class DropDownViewController<T:BaseModel>: AbstractController,UITableViewDataSou
         if let textField = textField  {
             textField.text = searchList[indexPath.row]
         }
-        if let button = buttonAnchor{
-            button.setTitle(searchList[indexPath.row], for: .normal)
-        }
+//        if let button = buttonAnchor{
+//            button.setTitle(searchList[indexPath.row], for: .normal)
+//        }
         if searchModelList.count > 0 {
             selectedObject = searchModelList[indexPath.row]
         }

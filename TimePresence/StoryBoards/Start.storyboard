@@ -529,7 +529,6 @@
                                         </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="loginAction:" destination="S1F-TW-tMb" eventType="touchUpInside" id="NYM-D6-RMw"/>
-                                            <segue destination="O9e-Lh-irL" kind="presentation" id="kcr-oq-GOY"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -659,6 +658,29 @@
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="lOf-0d-bxt">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="200"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cellId" textLabel="v6g-hF-V73" style="IBUITableViewCellStyleDefault" id="A8B-0S-VsG">
+                                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="A8B-0S-VsG" id="u3y-o6-Aq1">
+                                                    <rect key="frame" x="0.0" y="0.0" width="342" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="v6g-hF-V73">
+                                                            <rect key="frame" x="15" y="0.0" width="325" height="43.5"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                </tableViewCellContentView>
+                                            </tableViewCell>
+                                        </prototypes>
+                                        <connections>
+                                            <outlet property="dataSource" destination="qbs-Ws-IxO" id="T1D-1D-IbU"/>
+                                            <outlet property="delegate" destination="qbs-Ws-IxO" id="BvM-fc-UdL"/>
+                                        </connections>
                                     </tableView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -760,6 +782,7 @@
                     <navigationItem key="navigationItem" id="h26-La-TEO"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <connections>
+                        <outlet property="tableView" destination="lOf-0d-bxt" id="50U-na-BHH"/>
                         <outlet property="view" destination="t5f-Aw-vMT" id="ooQ-Tl-k5S"/>
                     </connections>
                 </viewController>
@@ -780,9 +803,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9dc-0V-BuM" userLabel="Login View">
-                                <rect key="frame" x="32" y="200" width="311" height="54"/>
+                                <rect key="frame" x="32" y="200" width="311" height="108"/>
                                 <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="URL" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rWR-mG-hlY" customClass="XUITextField" customModule="TimePresence" customModuleProvider="target">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Title" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="rWR-mG-hlY" customClass="XUITextField" customModule="TimePresence" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="311" height="54"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="54" id="cPs-hD-fsv" customClass="XNSLayoutConstraint" customModule="TimePresence" customModuleProvider="target"/>
@@ -794,13 +817,29 @@
                                             <outlet property="delegate" destination="kiT-LO-iBa" id="CqP-ID-ojD"/>
                                         </connections>
                                     </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="URL" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="IaF-BY-21F" customClass="XUITextField" customModule="TimePresence" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="54" width="311" height="54"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="54" id="ykP-fZ-iA5" customClass="XNSLayoutConstraint" customModule="TimePresence" customModuleProvider="target"/>
+                                        </constraints>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
+                                        <connections>
+                                            <outlet property="delegate" destination="kiT-LO-iBa" id="GQs-Oj-Ksg"/>
+                                        </connections>
+                                    </textField>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="54" id="Cla-pk-9gI" customClass="XNSLayoutConstraint" customModule="TimePresence" customModuleProvider="target"/>
+                                    <constraint firstAttribute="bottom" secondItem="IaF-BY-21F" secondAttribute="bottom" id="6qt-Mf-GI4"/>
+                                    <constraint firstAttribute="height" constant="108" id="Cla-pk-9gI" customClass="XNSLayoutConstraint" customModule="TimePresence" customModuleProvider="target"/>
                                     <constraint firstAttribute="trailing" secondItem="rWR-mG-hlY" secondAttribute="trailing" id="JWZ-04-yfr"/>
+                                    <constraint firstItem="IaF-BY-21F" firstAttribute="top" secondItem="rWR-mG-hlY" secondAttribute="bottom" id="XWQ-z2-1kq"/>
+                                    <constraint firstItem="IaF-BY-21F" firstAttribute="leading" secondItem="9dc-0V-BuM" secondAttribute="leading" id="hvF-BX-dkc"/>
                                     <constraint firstItem="rWR-mG-hlY" firstAttribute="top" secondItem="9dc-0V-BuM" secondAttribute="top" id="tI9-s9-mFi"/>
                                     <constraint firstItem="rWR-mG-hlY" firstAttribute="leading" secondItem="9dc-0V-BuM" secondAttribute="leading" id="v0S-W9-yRF"/>
+                                    <constraint firstAttribute="trailing" secondItem="IaF-BY-21F" secondAttribute="trailing" id="wWH-eT-gmg"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pQ6-LS-5kb">
@@ -822,7 +861,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Z36-7r-88O" userLabel="Center View">
-                                <rect key="frame" x="0.0" y="254" width="375" height="299"/>
+                                <rect key="frame" x="0.0" y="308" width="375" height="245"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zgg-gg-PXH" customClass="XUIButton" customModule="TimePresence" customModuleProvider="target">
                                         <rect key="frame" x="32" y="80" width="311" height="50"/>
@@ -851,7 +890,7 @@
                                             <userDefinedRuntimeAttribute type="boolean" keyPath="primary" value="YES"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <segue destination="S1F-TW-tMb" kind="show" id="hin-Qh-Ybk"/>
+                                            <action selector="save:" destination="kiT-LO-iBa" eventType="touchUpInside" id="BRa-px-5zi"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -907,7 +946,8 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <connections>
                         <outlet property="addButton" destination="Zgg-gg-PXH" id="Tpb-xI-XSj"/>
-                        <outlet property="urlTextField" destination="rWR-mG-hlY" id="BJQ-eO-fa4"/>
+                        <outlet property="titleTextField" destination="rWR-mG-hlY" id="gB2-aw-Lgg"/>
+                        <outlet property="urlTextField" destination="IaF-BY-21F" id="AwE-P7-t1D"/>
                         <outlet property="view" destination="mpp-id-Oxs" id="zAK-2U-PsG"/>
                     </connections>
                 </viewController>
@@ -922,6 +962,6 @@
         <image name="welcome" width="278" height="310"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="sCE-QC-PCv"/>
+        <segue reference="FED-30-AYj"/>
     </inferredMetricsTieBreakers>
 </document>

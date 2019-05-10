@@ -28,6 +28,8 @@ class LocationHelper : NSObject,CLLocationManagerDelegate
     var locationManager = CLLocationManager()
     var myLocation:Location? = nil{
         didSet {
+            print(myLocation)
+            DataStore.shared.myLocation = myLocation
             NotificationCenter.default.post(name: .notificationLocationChanged, object: nil)
         }
     }
@@ -51,8 +53,8 @@ class LocationHelper : NSObject,CLLocationManagerDelegate
         let lat : Double = Double(userLocation.coordinate.latitude)
         let long : Double = Double(userLocation.coordinate.longitude)
         myLocation = Location(lat:lat, long:long)
-        manager.stopUpdatingLocation()
-        stopUpdateLocation()
+//        manager.stopUpdatingLocation()
+//        stopUpdateLocation()
     }
     
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {

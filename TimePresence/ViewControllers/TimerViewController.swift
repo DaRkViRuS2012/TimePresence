@@ -8,14 +8,25 @@
 
 import UIKit
 
+
+enum TimerState{
+    case work
+    case pause
+    case end
+    case stoped
+}
+
 class TimerViewController: AbstractController {
 
-    
+    @IBOutlet weak var projectTitleLabel:UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var startButton: UIButton!
     @IBOutlet weak var pauseButton: UIButton!
-    @IBOutlet weak var resetButton: UIButton!
+  //  @IBOutlet weak var resetButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var actionsView:UIView!
+    @IBOutlet weak var stateLabel:UILabel!
+    
     
     var seconds:Int = 0
     var timer:Timer = Timer()
@@ -24,15 +35,29 @@ class TimerViewController: AbstractController {
     var resumeTapped = false
     
     var task:Task?
+    var projects = ["Project 1","Project 2","project 3","Nour"]
+    var projectsDropDown = DropDownViewController<Task>()
+    var state:TimerState = .stoped
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.showNavBackButton = true
-//        self.pauseButton.isEnabled = false
-        //self.setNavBarTitle(title: (task?.title)!)
-        self.resetButton.isEnabled = false
-        self.saveButton.isEnabled = false
+        self.actionsView.isHidden = true
+//        self.resetButton.isEnabled = false
+//        self.saveButton.isEnabled = false
+        
+        projectsDropDown.buttonAnchor = self.startButton
+        projectsDropDown.delegate = self
+        projectsDropDown.list = projects
     }
+    
+    
+    override func customizeView() {
+        super.customizeView()
+        self.startButton.setBackgroundColor(color: AppColors.green, forState: .normal)
+        self.startButton.setBackgroundColor(color: AppColors.gray, forState: .disabled)
+        
+    }
+    
     
     func addObserve(){
         NotificationCenter.default.addObserver(self, selector: #selector(pauseApp), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
@@ -46,6 +71,15 @@ class TimerViewController: AbstractController {
     
     
     
+    func startState(){
+        self.startButton.isEnabled = true
+        self.actionsView.isHidden = true
+        self.pauseButton.setTitle("Pause", for: .normal)
+        seconds = 0
+        projectTitleLabel.text = nil
+        stateLabel.text = nil
+        
+    }
     
     @objc func pauseApp(){
         self.stop() //invalidate timer
@@ -84,17 +118,24 @@ class TimerViewController: AbstractController {
     
 
     @IBAction func startTimer(_ sender: UIButton) {
-        if isTimerRunning == false {
-            runTimer()
-            self.startButton.isEnabled = false
-            self.resetButton.isEnabled = true
-        }
+       
     }
     
+    
+    func start(){
+        if isTimerRunning == false {
+            runTimer()
+            stateLabel.text = "Working"
+            self.startButton.isEnabled = false
+            self.pauseButton.isEnabled = true
+            state = .work
+        }
+    }
     
     func runTimer() {
         if isTimerRunning == false {
         self.saveButton.isEnabled = true
+        self.actionsView.isHidden = false
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: (#selector(updateTimer)), userInfo: nil, repeats: true)
         isTimerRunning = true
         addObserve()
@@ -102,15 +143,21 @@ class TimerViewController: AbstractController {
     }
     
     @IBAction func pauseResume(_ sender: UIButton) {
-        if self.resumeTapped == false {
-            timer.invalidate()
-            isTimerRunning = false
-            self.resumeTapped = true
+        if state == .work{
+            self.timer.invalidate()
+            self.timeLabel.text = DateHelper.timeString(time: TimeInterval(self.seconds))
+            self.isTimerRunning = false
+//            self.pauseButton.isEnabled = false
+            stateLabel.text = "Paused"
+            state = .pause
+            removeObserve()
             self.pauseButton.setTitle("Resume",for: .normal)
         } else {
             runTimer()
             self.resumeTapped = false
             isTimerRunning = true
+            state = .work
+            stateLabel.text = "Working"
             self.pauseButton.setTitle("Pause",for: .normal)
         }
     }
@@ -124,8 +171,9 @@ class TimerViewController: AbstractController {
         self.timer.invalidate()
         self.timeLabel.text = DateHelper.timeString(time: TimeInterval(self.seconds))
         self.isTimerRunning = false
-        self.resetButton.isEnabled = false
-        self.startButton.isEnabled = true
+        self.pauseButton.isEnabled = false
+        stateLabel.text = "Paused"
+//        self.startButton.isEnabled = true
     }
     
     
@@ -140,30 +188,41 @@ class TimerViewController: AbstractController {
             stop()
         }
         
-        let alert = UIAlertController(style: .alert, title: "Save", message: "Enter Tilte")
-        
-   
+        let alert = UIAlertController(style: .alert, title: "Save", message: "Enter Note")
         
         alert.addTextField { (textFiled) in
-            textFiled.placeholder = "Title"
+            textFiled.placeholder = "Note"
             textFiled.autocapitalizationType = .none
             textFiled.autocorrectionType = .no
         }
-        alert.addAction(title:"Cancel" , style:.cancel)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in
+            
+        }
+        alert.addAction(cancelAction)
         
         alert.addAction(title: "OK", style: .default) { (action) in
             if let title = alert.textFields?.first?.text{
-                var newLap  = Lap(ID: -1, taskID: self.task?.ID, seconds: self.seconds, date: Date(),title:title)
-                newLap.save()
+//                var newLap  = Lap(ID: -1, taskID: self.task?.ID, seconds: self.seconds, date: Date(),title:title)
+//
+//                newLap.save()
                 self.showMessage(message: "Done", type: .success)
-                self.popOrDismissViewControllerAnimated(animated: true)
-                
+//                self.popOrDismissViewControllerAnimated(animated: true)
+                self.startState()
+                self.state = .end
+//
             }
-
         }
-        alert.show()
-        
+        self.present(alert, animated: true, completion: nil)
+    }
+}
 
+extension TimerViewController:DropDownDelegete{
+    func didClearData() {
         
+    }
+    
+    func didSelectetItem<T>(dropDown: DropDownViewController<T>, model: T?, index: Int) where T : BaseModel {
+        self.projectTitleLabel.text = self.projects[index]
+        start()
     }
 }

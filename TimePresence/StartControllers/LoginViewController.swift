@@ -23,16 +23,14 @@ class LoginViewController: AbstractController {
     
     
     
-    var homeViewControllerId = "tabController"
+    var homeViewControllerId = "HomeNavigationController"
     var signupViewControllerId = "SignupViewController"
     
     // MARK: Controller Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         //self.setCustomeNavBarTitle(type: .signin)
-        //  self.showNavBackButton = true
-        
-        
+        self.showNavBackButton = true        
         self.navigationController?.navigationBar.isTranslucent = false
     }
     
@@ -78,13 +76,13 @@ class LoginViewController: AbstractController {
         // validate email
         
         if let email = emailTextField.text, !email.isEmpty {
-            if email.isValidEmail() {
                 // validate password
                 if let password = passwordTextField.text, !password.isEmpty {
-                    if password.length >= AppConfig.passwordLength {
+                    self.presentViewController(viewControllerId: self.homeViewControllerId,storyBoard: .mainStoryboard)
+                    return
                         // start login process
                         self.showActivityLoader(true)
-                        self.view.isUserInteractionEnabled = false
+                    
                         ApiManager.shared.userLogin(email: email, password: password) { (isSuccess, error, user) in
                             // stop loading
                             self.showActivityLoader(false)
@@ -103,21 +101,15 @@ class LoginViewController: AbstractController {
                                 }
                             }
                         }
-                    } else {
-                        self.passwordTextField.errorMode()
-                        showMessage(message:"SINGUP_VALIDATION_PASSWORD_LENGHTH".localized, type: .warning)
-                    }
+                    
                 } else {
                     self.passwordTextField.errorMode()
-                    showMessage(message:"SINGUP_VALIDATION_PASSWORD".localized, type: .warning)
+                    showMessage(message:"Enter Password".localized, type: .warning)
                 }
-            } else {
-                self.emailTextField.errorMode()
-                showMessage(message:"SINGUP_VALIDATION_EMAIL_FORMAT".localized, type: .warning)
-            }
+          
         } else {
             self.emailTextField.errorMode()
-            showMessage(message:"SINGUP_VALIDATION_EMAIL".localized, type: .warning)
+            showMessage(message:"Enter Username".localized, type: .warning)
         }
     }
     
@@ -134,5 +126,7 @@ class LoginViewController: AbstractController {
         }
         return true
     }
+    
+    
 }
 

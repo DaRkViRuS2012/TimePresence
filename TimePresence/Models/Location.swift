@@ -9,9 +9,9 @@
 import SwiftyJSON
 import CoreLocation
 
-struct Location {
+class Location:BaseModel,CustomStringConvertible {
     // MARK: Properties
-    public var id:Int!
+//    public var id:Int!
     public var googleID:String?
     public var name:String?
     public var city:String?
@@ -77,7 +77,8 @@ struct Location {
     }
     
     // MARK: Location initializer
-    init() {
+    override init() {
+        super.init()
         lat = 0
         long = 0
     }
@@ -85,6 +86,7 @@ struct Location {
     init(lat:Double,long:Double) {
         self.lat = lat
         self.long = long
+        super.init()
     }
     
     
@@ -104,7 +106,7 @@ struct Location {
      - parameter object: The object of either Dictionary or Array kind that was passed.
      - returns: An initalized instance of the class.
      */
-    public init(object: Any) {
+    public convenience init(object: Any) {
         self.init(json: JSON(object))
     }
     
@@ -113,9 +115,9 @@ struct Location {
      - parameter json: JSON object from SwiftyJSON.
      - returns: An initalized instance of the class.
      */
-    public init(json: JSON) {
-        
-        id = json[kId].int
+    public required init(json: JSON) {
+        super.init(json: json)
+//        id = json[kId].int
         lat = json[kLat].double
         long = json[kLong].double
         latitiued = json[kLat].string
@@ -135,13 +137,15 @@ struct Location {
      Generates description of the object in the form of a NSDictionary.
      - returns: A Key value pair containing all valid values in the object.
      */
-    public func dictionaryRepresentation() -> [String: Any] {
-        var dictionary: [String: Any] = [:]
-        if let value = id { dictionary[kId] = value }
+    public override func dictionaryRepresentation() -> [String: Any] {
+        var dictionary = super.dictionaryRepresentation()
+//        if let value = id { dictionary[kId] = value }
         if let value = googleID { dictionary[kGoogleID] = value }
         if let value = name { dictionary[kName] = value }
         if let value = latitiued { dictionary[kLat] = value}
         if let value  = longtiued { dictionary[kLong] = value}
+        if let value = lat { dictionary[kLat] = value}
+        if let value  = long { dictionary[kLong] = value}
         if let value  = photo { dictionary[kPhoto] = value}
         if let value = city { dictionary[kAddress] = value}
         return dictionary
@@ -215,6 +219,11 @@ struct Location {
                 onDone(nil,nil)
             }
         })
+    }
+    
+    
+    var description: String{
+        return "The Location Lat is \(self.lat) \n long is \(self.long)"
     }
     
 }

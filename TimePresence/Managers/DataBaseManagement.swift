@@ -22,8 +22,11 @@ class DatabaseManagement {
         
         do {
             db = try Connection("\(path)/db.sqlite3")
+            createTableUser()
+            createServicesTable()
             createTasksTable()
             createLapTable()
+            
         } catch {
             db = nil
             print ("Unable to open database")
@@ -57,7 +60,7 @@ class DatabaseManagement {
     
     func addService(service:Service) -> Int64 {
         do {
-            let insert = tblServicss.insert(serviceTitle <- service.title,serviceCreatedDate <- service.date,serviceUserCode <- service.userCode,serviceURL <- service.url)
+            let insert = tblServicss.insert(serviceTitle <- service.title!,serviceCreatedDate <- service.date!,serviceUserCode <- service.userCode!,serviceURL <- service.url!)
             if let id = try db?.run(insert){
                 print("Insert to tblService successfully userid \(id)")
                 return id
@@ -127,8 +130,8 @@ class DatabaseManagement {
         var tasks:[Task] = []
         do {
             for task in try db!.prepare(self.tblTasks.filter(taskServiceID == serviceId)) {
-                let newTask = Task(ID: task[taskID], title: task[taskTitle], date: task[taskCreatedDate], userCode: task[taskUserCode], serviceId: task[taskServiceID])
-                tasks.append(newTask)
+//                let newTask = Task(ID: task[taskID], title: task[taskTitle], date: task[taskCreatedDate], userCode: task[taskUserCode], serviceId: task[taskServiceID])
+//                tasks.append(newTask)
             }
         } catch {
             print("Cannot get list of Laps")
@@ -183,7 +186,7 @@ class DatabaseManagement {
     
     func addTask(task:Task) -> Int64 {
         do {
-            let insert = tblTasks.insert(taskTitle <- task.title,taskCreatedDate <- task.date,taskUserCode <- task.userCode,taskServiceID <- task.serviceId)
+            let insert = tblTasks.insert(taskTitle <- task.title!,taskCreatedDate <- task.date!,taskUserCode <- task.userCode!,taskServiceID <- task.serviceId!)
             if let id = try db?.run(insert){
                 print("Insert to tblHeader successfully userid \(id)")
                 return id
@@ -204,8 +207,8 @@ class DatabaseManagement {
         do {
             for task in try db!.prepare(self.tblTasks) {
             
-                let newTask = Task(ID: task[taskID], title: task[taskTitle], date: task[taskCreatedDate], userCode: task[taskUserCode], serviceId: task[taskServiceID])
-                tasks.append(newTask)
+//                let newTask = Task(ID: task[taskID], title: task[taskTitle], date: task[taskCreatedDate], userCode: task[taskUserCode], serviceId: task[taskServiceID])
+//                tasks.append(newTask)
             }
         } catch {
             print("Cannot get list of tasks")
@@ -220,7 +223,7 @@ class DatabaseManagement {
         do{
             let tbl  = tblTasks.filter(taskID == id)
             if let task  = try db?.pluck(tbl){
-            let newTask = Task(ID: task[taskID], title: task[taskTitle], date: task[taskCreatedDate], userCode: task[taskUserCode], serviceId: task[taskServiceID])
+            let newTask = Task()//Task(ID: task[taskID], title: task[taskTitle], date: task[taskCreatedDate], userCode: task[taskUserCode], serviceId: task[taskServiceID])
                 return newTask
             }
             return nil
@@ -236,7 +239,7 @@ class DatabaseManagement {
         let headertbl = tblTasks.filter(taskID == id)
         do {
             let update = headertbl.update([
-                    taskTitle <- task.title
+                    taskTitle <- task.title!
                 ])
             if try db!.run(update) > 0 {
                 print("Update item successfully")
@@ -439,7 +442,7 @@ class DatabaseManagement {
     
     func addLap(lap:Lap) -> Int64? {
         do {
-            let insert = tblLap.insert(lapTaskId <- lap.taskID!,lapTitle <- lap.title, seconds <- lap.seconds , lapCreatedDate <- lap.date!)
+            let insert = tblLap.insert(lapTaskId <- lap.taskID!,lapTitle <- lap.title!, seconds <- lap.seconds , lapCreatedDate <- lap.date!)
             let id = try db?.run(insert)
             print("Insert to tblLine successfully")
             return id
@@ -455,7 +458,7 @@ class DatabaseManagement {
         do{
             let laptbl  = tblLap.filter(LapId == id)
             let lap  = try db?.pluck(laptbl)
-            let newLap = Lap(ID: lap?[LapId], taskID: lap?[lapTaskId], seconds: lap![seconds], date: lap?[lapCreatedDate], title: lap![lapTitle])
+            let newLap = Lap()//Lap(ID: lap?[LapId], taskID: lap?[lapTaskId], seconds: lap![seconds], date: lap?[lapCreatedDate], title: lap![lapTitle])
             return newLap
         }catch{
             return nil
@@ -468,8 +471,8 @@ class DatabaseManagement {
         var laps:[Lap] = []
             do {
                 for lap in try db!.prepare(self.tblLap.filter(lapTaskId == taskId)) {
-                    let newLap = Lap(ID: lap[LapId], taskID: lap[lapTaskId], seconds: lap[seconds], date: lap[lapCreatedDate], title: lap[lapTitle])
-                    laps.append(newLap)
+//                    let newLap = Lap(ID: lap[LapId], taskID: lap[lapTaskId], seconds: lap[seconds], date: lap[lapCreatedDate], title: lap[lapTitle])
+//                    laps.append(newLap)
                 }
             } catch {
                 print("Cannot get list of Laps")

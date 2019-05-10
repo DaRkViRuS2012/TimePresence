@@ -28,10 +28,14 @@ class DataStore :NSObject {
     private let CACHE_KEY_SEARCH_PRODUCTS = "searchproducts"
     private let CACHE_KEY_LATEST_SEARCH_RESULTS = "latestSearchrResults"
     private let CACHE_KEY_FCM_TOKEN = "FCM_TOKEN"
+    private let CACHE_KEY_MY_LOCATION = "myLocation"
     private let CACHE_KEY_ON_GOING_ORDER = "onGoingOrderId"
+    private let CACHE_KEY_URL = "url"
     //MARK: Temp data holders
     //keep reference to the written value in another private property just to prevent reading from cache each time you use this var
     private var _me:AppUser?
+    private var _my_location:Location?
+    private var _service:Service?
    // private var _products:[Product] = []
     
     
@@ -63,6 +67,36 @@ class DataStore :NSObject {
             return _me
         }
     }
+    
+    
+    public var myLocation:Location?{
+        set{
+            _my_location = newValue
+            saveBaseModelObject(object: _my_location, withKey: CACHE_KEY_MY_LOCATION)
+            NotificationCenter.default.post(name: .notificationUserChanged, object: nil)
+        }
+        
+        get{
+            if (_my_location == nil) {
+                _my_location = loadBaseModelObjectForKey(key: CACHE_KEY_MY_LOCATION)
+            }
+            return _my_location
+        }
+    }
+    
+    public var currentURL:Service?{
+        set{
+            _service = newValue
+            saveBaseModelObject(object: _service, withKey: CACHE_KEY_URL)
+        }
+        get{
+            if (_service == nil) {
+                _service = loadBaseModelObjectForKey(key: CACHE_KEY_URL)
+            }
+            return _service
+        }
+    }
+    
     
   
 

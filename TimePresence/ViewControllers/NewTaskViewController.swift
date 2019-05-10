@@ -23,8 +23,8 @@ class NewTaskViewController: AbstractController {
 
     @IBAction func save(_ sender: UIButton) {
         if let title = titleTextField.text,!title.isEmpty{
-            var newTask = Task(ID: -1, title: title, date: Date(), userCode: "", serviceId: 77)
-            newTask.save()
+//            var newTask = Task(ID: -1, title: title, date: Date(), userCode: "", serviceId: 77)
+//            newTask.save()
             self.showMessage(message: "Done", type: .success)
             self.popOrDismissViewControllerAnimated(animated: true)
         }else{

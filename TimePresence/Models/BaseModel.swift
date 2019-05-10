@@ -10,16 +10,23 @@ import SwiftyJSON
 /**
  a base model for all business objects in the app, offers comon members and methods among all models
  */
-public class BaseModel {
-
+public class BaseModel:Hashable {
+    public var hashValue:Int
+    public static func ==(lhs: BaseModel, rhs: BaseModel) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    
     // MARK: Declaration for string constants to be used to decode and also serialize.
     private let kBaseModelIdKey: String = "id"
-
+    
     // MARK: Properties
     
     public var id: String = ""
+    public var modelTitle:String?
     
     init() {
+        hashValue = id.hash
     }
     // MARK: SwiftyJSON Initalizers
     /**
@@ -29,6 +36,7 @@ public class BaseModel {
      */
     public convenience init(object: Any) {
         self.init(json: JSON(object))
+        hashValue = id.hash
     }
     
     /**
@@ -40,12 +48,13 @@ public class BaseModel {
         if let identefier = json[kBaseModelIdKey].string {
             id = identefier
         }
+        hashValue = id.hash
     }
-
+    
     /**
-    Generates description of the object in the form of a NSDictionary.
-    - returns: A Key value pair containing all valid values in the object.
-    */
+     Generates description of the object in the form of a NSDictionary.
+     - returns: A Key value pair containing all valid values in the object.
+     */
     public func dictionaryRepresentation() -> [String: Any] {
         var dictionary: [String: Any] = [:]
         dictionary[kBaseModelIdKey] = id
@@ -60,7 +69,7 @@ public class BaseModel {
     }
     
     // MARK: arrays utils
-    func isExistIn<T:BaseModel>(arr:[T]) -> Bool {        
+    func isExistIn<T:BaseModel>(arr:[T]) -> Bool {
         if arr.contains(where: { $0.id == self.id }) {
             return true
         } else {
