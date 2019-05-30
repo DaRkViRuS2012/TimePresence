@@ -24,6 +24,31 @@ class URLSViewController: AbstractController {
         services = DatabaseManagement.shared.queryAllServices()
         tableView.reloadData()
     }
+    
+    
+    func getCompanies(){
+        guard let url = DataStore.shared.currentURL else {return}
+        self.showActivityLoader(true)
+        ApiManager.shared.getCompanies { (success, error, result) in
+            self.showActivityLoader(false)
+            if success{
+                if let company = result.first{
+                    company.urlId = url.ID
+                    company.save()
+                    DataStore.shared.currentCompany = company
+                    let vc = UIStoryboard.startStoryboard.instantiateViewController(withIdentifier: "LoginViewController" ) as! LoginViewController
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+            
+            if error != nil{
+                if let msg = error?.errorName{
+                    self.showMessage(message: msg, type: .error)
+                }
+            }
+        }
+      
+    }
 
     
 }
@@ -48,7 +73,6 @@ extension URLSViewController:UITableViewDelegate,UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         DataStore.shared.currentURL = self.services[indexPath.row]
-        let vc = UIStoryboard.startStoryboard.instantiateViewController(withIdentifier: "LoginViewController" ) as! LoginViewController
-        self.navigationController?.pushViewController(vc, animated: true)
+        getCompanies()
     }
 }

@@ -10,7 +10,11 @@ import SwiftyJSON
 /**
  a base model for all business objects in the app, offers comon members and methods among all models
  */
-public class BaseModel:Hashable {
+public class BaseModel:Hashable , CustomStringConvertible{
+    public var description: String{
+        return "id = \(self.id)"
+    }
+    
     public var hashValue:Int
     public static func ==(lhs: BaseModel, rhs: BaseModel) -> Bool {
         return lhs.id == rhs.id

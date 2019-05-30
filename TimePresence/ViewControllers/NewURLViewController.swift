@@ -18,6 +18,7 @@ class NewURLViewController: AbstractController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.showNavBackButton = true
     }
     
     override func customizeView() {

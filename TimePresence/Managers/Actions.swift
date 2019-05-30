@@ -43,6 +43,68 @@ class ActionLogout:Action
 
 
 
+class ActionSyncLaps: Action{
+    override class func execute() {
+        guard let url = DataStore.shared.currentURL?.url,
+            let company = DataStore.shared.currentCompany?.DB,
+            let username = DataStore.shared.me?.username,
+            let password = DataStore.shared.me?.password
+            else {return}
+        
+        let laps = DatabaseManagement.shared.queryUnSyncedLaps(url: url, companyDB: company)
+        let chuncks = laps.chunk(size: AppConfig.numberOfRecodrds)
+        for chunk in chuncks{
+            (UIApplication.visibleViewController() as! AbstractController).showActivityLoader(true)
+            ApiManager.shared.syncLogs(companyDB: company, username: username, password: password, logs: chunk) { (success, error, results) in
+                
+                (UIApplication.visibleViewController() as! AbstractController).showActivityLoader(false)
+                if success{
+                    
+                    DataStore.shared.syncTime = DateHelper.getISOStringFromDate(Date())
+                    var i = 0
+                    for res in results{
+                        if let err = res.error,!err{
+                            chunk[i].synced = true
+                            chunk[i].save()
+                        }
+                        i += 1
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+
+class ActionSyncLocations: Action{
+    override class func execute() {
+        guard let company = DataStore.shared.currentCompany?.DB,
+            let username = DataStore.shared.me?.username,
+            let password = DataStore.shared.me?.password
+            else {return}
+        
+        let laps = DataStore.shared.locations
+//            (UIApplication.visibleViewController() as! AbstractController).showActivityLoader(true)
+            ApiManager.shared.syncLocations(companyDB: company, username: username, password: password,locations: laps) { (success, error,results) in
+//                (UIApplication.visibleViewController() as! AbstractController).showActivityLoader(false)
+                if success{
+                    DataStore.shared.syncTime = DateHelper.getISOStringFromDate(Date())
+                    var i = 0
+                    for res in results{
+                        if let err = res.error,!err{
+                            DataStore.shared.locations[i].synced = true
+                        }
+                        i += 1
+                    }
+                     DataStore.shared.locations = DataStore.shared.locations.filter({$0.synced == false})
+                    
+                }
+            }
+        
+    }
+    
+}
 
 
 class ActionShowStart: Action {

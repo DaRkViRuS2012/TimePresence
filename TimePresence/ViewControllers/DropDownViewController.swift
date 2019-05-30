@@ -9,7 +9,7 @@
 import UIKit
 
 protocol DropDownDelegete {
-    func didSelectetItem<T:BaseModel>(dropDown: DropDownViewController<T>,model:T?,index:Int)
+    func didSelectetItem<T:BaseModel>(tag:String,dropDown: DropDownViewController<T>,model:T?,index:Int)
     func didClearData()
 }
 
@@ -26,6 +26,7 @@ class DropDownViewController<T:BaseModel>: AbstractController,UITableViewDataSou
         button.addTarget(self, action: #selector(close), for: .touchUpInside)
         return button
     }()
+  
     
     var selectedObject:T?
     
@@ -201,7 +202,7 @@ class DropDownViewController<T:BaseModel>: AbstractController,UITableViewDataSou
         if searchModelList.count > 0 {
             selectedObject = searchModelList[indexPath.row]
         }
-        delegate?.didSelectetItem(dropDown:self,model:selectedObject,index: indexPath.row)
+        delegate?.didSelectetItem(tag:self.tag!,dropDown:self,model:selectedObject,index: indexPath.row)
         self.view.endEditing(true)
         self.dismiss(animated: true, completion: nil)
     }

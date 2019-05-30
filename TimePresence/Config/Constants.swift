@@ -10,16 +10,27 @@ import UIKit
 
 // MARK: Application configuration
 struct AppConfig {
-    // domain
-    static let appBaseDevURL = "https://rombeye.falcon9.io/dev/"
-    static let appBaseLiveURL = "https://rombeye.falcon9.io/dev/"
-    static let useLiveAPI: Bool = false
-    static let useCurrentLocation: Bool = false
-    // social
-    static let instagramClienID = "a33bd13f810c4df7ae344437c21fc926"
-    static let instagramRedirectURI = "http://alpha-apps.ae"
-    static let twitterConsumerKey = "eq0dVMoM1JqNcR6VJJILsdXNo"
-    static let twitterConsumerSecret = "6JkdvzSijm13xjBW0fYSEG4yF2tbro8pwxz1vDx290Bj0Mw2vI"
+    
+    
+    static var numberOfRecodrds:Int {
+        
+        get{
+            return DataStore.shared.numberOfRecords == 0 ? 100 : DataStore.shared.numberOfRecords!
+        }
+        set{
+            DataStore.shared.numberOfRecords = newValue
+        }
+    }
+    
+    static var numberOfSeconds:Int {
+        get{
+            return DataStore.shared.numberOfSeconds == 0  ? 36000 : DataStore.shared.numberOfSeconds!
+        }
+        set{
+            DataStore.shared.numberOfSeconds = newValue
+        }
+    }
+
     // validation
     static let passwordLength = 6
     // current application language

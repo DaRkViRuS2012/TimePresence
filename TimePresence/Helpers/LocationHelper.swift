@@ -41,6 +41,8 @@ class LocationHelper : NSObject,CLLocationManagerDelegate
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.distanceFilter = 500
             locationManager.startUpdatingLocation()
+            locationManager.allowsBackgroundLocationUpdates = true
+            locationManager.pausesLocationUpdatesAutomatically = false
         }
     }
     

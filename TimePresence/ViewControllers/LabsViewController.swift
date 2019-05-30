@@ -21,7 +21,7 @@ class LabsViewController: AbstractController {
         super.viewDidLoad()
 
         self.showNavBackButton = true
-        self.setNavBarTitle(title: (task?.title)!)
+        self.setNavBarTitle(title: (task?.name)!)
         self.tableView.tableFooterView = UIView()
         self.newButton.layer.cornerRadius = 23
         

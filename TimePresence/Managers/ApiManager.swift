@@ -30,7 +30,7 @@ class ApiManager: NSObject {
         }
     }
     
-    let baseURL = ""
+    let baseURL = DataStore.shared.currentURL?.url ?? ""
     //let baseURL = "http://192.168.1.116:8000/api"
     let imageUrl = ""
     let error_domain = ""
@@ -600,10 +600,222 @@ class ApiManager: NSObject {
         }
     }
     
+    
+    
+    // get companies
+    
+    func getCompanies(completionBlock: @escaping (_ success: Bool, _ error: ServerError?,_ response:[Company]) -> Void) {
+        let categoriesListURL = "\(baseURL)/MobileApp/CompanyList"
+        Alamofire.request(categoriesListURL, method: .get, headers: headers).responseJSON { (responseObject) -> Void in
+            print(responseObject)
+            if responseObject.result.isSuccess {
+                // let resJson = JSON(responseObject.result.value!)
+                
+                let jsonResponse = JSON(responseObject.result.value!)
+                print(jsonResponse)
+                if let code = responseObject.response?.statusCode, code >= 400 {
+                    let serverError = ServerError(json: jsonResponse) ?? ServerError.unknownError
+                    completionBlock(false , serverError,[])
+                } else {
+                    let resultObject = APIResult<Company>(json:jsonResponse)
+                    if let haserror = resultObject.has_Error,!haserror {
+                        let result = resultObject.data
+                        completionBlock(true, nil,result ?? [])
+                    }else{
+                        completionBlock(false, ServerError.unknownError,[])
+                    }
+                    
+                }
+            }
+            if responseObject.result.isFailure {
+                
+                if let code = responseObject.response?.statusCode, code >= 400 {
+                    completionBlock(false, ServerError.unknownError,[])
+                } else {
+                    completionBlock(false, ServerError.connectionError,[])
+                }
+            }
+        }
+    }
+
+    
+    // get project List
+    func getProjectList(companyDB:String,username:String,password:String,completionBlock: @escaping (_ success: Bool, _ error: ServerError?,_ response:[Task]) -> Void) {
+        let categoriesListURL = "\(baseURL)/MobileApp/ProjectList"
+        
+        let parameters : [String : Any] = [
+            "companydb": companyDB,
+            "username": username,
+            "password": password
+        ]
+        Alamofire.request(categoriesListURL, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { (responseObject) -> Void in
+            print(responseObject)
+            if responseObject.result.isSuccess {
+                // let resJson = JSON(responseObject.result.value!)
+                
+                let jsonResponse = JSON(responseObject.result.value!)
+                print(jsonResponse)
+                if let code = responseObject.response?.statusCode, code >= 400 {
+                    let serverError = ServerError(json: jsonResponse) ?? ServerError.unknownError
+                    completionBlock(false , serverError,[])
+                } else {
+                    let resultObject = APIResult<Task>(json:jsonResponse)
+                    if let haserror = resultObject.has_Error,!haserror {
+                        let result = resultObject.data
+                        completionBlock(true, nil,result ?? [])
+                    }else{
+                        completionBlock(false, ServerError.unknownError,[])
+                    }
+                    
+                }
+            }
+            if responseObject.result.isFailure {
+                
+                if let code = responseObject.response?.statusCode, code >= 400 {
+                    completionBlock(false, ServerError.unknownError,[])
+                } else {
+                    completionBlock(false, ServerError.connectionError,[])
+                }
+            }
+        }
+    }
+
    
    
 
+    
+    // sync
+    
+    /*
+     "companydb": "SBODemoCH",
+     "username": "manager",
+     "password": "1234",
+     "logs": [
+     {
+     "id": 1,
+     "sessionKey": "111111111111111111",
+     "url": "http://localhost:61408/MobileApp",
+     "companyDB": "SBODemoCH",
+     "projectId": 4,
+     "startTime": "2019-01-01T00:00:00",
+     "endTime": "2019-01-01T10:00:00",
+     "totalMinutes": 4,
+     "macId": "11111111111111111111111",
+     "clientType": "ios",
+     "userLocation": {
+     "longitude": "3333",
+     "latitudes": "5555"
+     },
+     "userIP": "129.129.1.1",
+     "workType": "break",
+     "approved": false
+     },
+     */
+    func syncLogs(companyDB:String,username:String,password:String,logs:[Lap],completionBlock: @escaping (_ success: Bool, _ error: ServerError?,_ response:[SyncResponce]) -> Void) {
+        let categoriesListURL = "\(baseURL)/MobileApp/SaveLog"
+        
+        
+        var logsDictionary:[[String:Any]] = []
+        for log in logs{
+            var dic = log.dictionaryRepresentation()
+            dic["id"] = nil
+            dic["latitudes"] = nil
+            dic["longitude"] = nil
+            logsDictionary.append(dic)
+            
+        }
+        
 
+        
+        let parameters : [String : Any] = [
+            "companydb": companyDB,
+            "username": username,
+            "password": password,
+            "logs":logsDictionary
+        ]
+        print(parameters)
+        Alamofire.request(categoriesListURL, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { (responseObject) -> Void in
+            print(responseObject)
+            if responseObject.result.isSuccess {
+                // let resJson = JSON(responseObject.result.value!)
+                
+                let jsonResponse = JSON(responseObject.result.value!)
+                print(jsonResponse)
+                if let code = responseObject.response?.statusCode, code >= 400 {
+                    let serverError = ServerError(json: jsonResponse) ?? ServerError.unknownError
+                    completionBlock(false , serverError,[])
+                } else {
+                    if let array = jsonResponse.array{
+                        let result = array.map{SyncResponce(json:$0)}
+                        completionBlock(true, nil,result)
+                    }else{
+                        completionBlock(true, ServerError.unknownError,[])
+                    }
+                    
+                }
+            }
+            if responseObject.result.isFailure {
+                
+                if let code = responseObject.response?.statusCode, code >= 400 {
+                    completionBlock(false, ServerError.unknownError,[])
+                } else {
+                    completionBlock(false, ServerError.connectionError,[])
+                }
+            }
+        }
+    }
+    
+    
+    func syncLocations(companyDB:String,username:String,password:String,locations:[Lap],completionBlock: @escaping (_ success: Bool, _ error: ServerError?,_ response:[SyncResponce]) -> Void) {
+        let categoriesListURL = "\(baseURL)/MobileApp/SaveLocation"
+        
+        var logsDictionary:[[String:Any]] = []
+        for log in locations{
+            var dic = log.dictionaryRepresentation()
+            let time = dic["startTime"]
+            dic["startTime"] = nil
+            dic["currentTime"] = time
+            logsDictionary.append(dic)
+        }
+        
+        let parameters : [String : Any] = [
+            "companydb": companyDB,
+            "username": username,
+            "password": password,
+            "locations" :logsDictionary
+        ]
+        print(parameters)
+        Alamofire.request(categoriesListURL, method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: headers).responseJSON { (responseObject) -> Void in
+            print(responseObject)
+            if responseObject.result.isSuccess {
+                // let resJson = JSON(responseObject.result.value!)
+                
+                let jsonResponse = JSON(responseObject.result.value!)
+                print(jsonResponse)
+                if let code = responseObject.response?.statusCode, code >= 400 {
+                    let serverError = ServerError(json: jsonResponse) ?? ServerError.unknownError
+                    completionBlock(false , serverError,[])
+                } else {
+                    if let array = jsonResponse.array{
+                        let result = array.map{SyncResponce(json:$0)}
+                        completionBlock(true, nil,result)
+                    }else{
+                        completionBlock(true, ServerError.unknownError,[])
+                    }
+                }
+            }
+            if responseObject.result.isFailure {
+                
+                if let code = responseObject.response?.statusCode, code >= 400 {
+                    completionBlock(false, ServerError.unknownError,[])
+                } else {
+                    completionBlock(false, ServerError.connectionError,[])
+                }
+            }
+        }
+    }
+    
+    
 }
 
 /**

@@ -40,20 +40,11 @@ class LoginViewController: AbstractController {
         // set fonts
         loginButton.titleLabel?.font = AppFonts.normal
         
-//        signupButton.titleLabel?.font = AppFonts.small
+
         loginButton.backgroundColor = AppColors.orange
-        
-        // set text
-//        loginButton.setTitle("START_NORMAL_LOGIN".localized, for: .normal)
-//        loginButton.setTitle("START_NORMAL_LOGIN".localized, for: .highlighted)
-//        // loginButton.hideTextWhenLoading = true
-//
-//        signupButton.setTitle("START_CREATE_ACCOUNT".localized, for: .normal)
-//        signupButton.setTitle("START_CREATE_ACCOUNT".localized, for: .highlighted)
+    
         emailTextField.placeholder = "Username".localized
         passwordTextField.placeholder = "Password".localized
-//
-//
         // text field styles
         emailTextField.appStyle()
         passwordTextField.appStyle()
@@ -62,8 +53,6 @@ class LoginViewController: AbstractController {
         loginButton.makeRounded()
         loginView.addShaddow()
         
-        // set Colors
-        //        loginButton.backgroundColor = AppColors.
     }
     
     // Build up view elements
@@ -74,27 +63,28 @@ class LoginViewController: AbstractController {
     // MARK: Actions
     @IBAction func loginAction(_ sender: UIButton) {
         // validate email
-        
+        guard let db = DataStore.shared.currentCompany?.DB else {return}
         if let email = emailTextField.text, !email.isEmpty {
                 // validate password
                 if let password = passwordTextField.text, !password.isEmpty {
-                    self.presentViewController(viewControllerId: self.homeViewControllerId,storyBoard: .mainStoryboard)
-                    return
+                
                         // start login process
                         self.showActivityLoader(true)
                     
-                        ApiManager.shared.userLogin(email: email, password: password) { (isSuccess, error, user) in
+                    ApiManager.shared.getProjectList(companyDB: db, username: email, password: password) { (success, error, resutl) in
                             // stop loading
                             self.showActivityLoader(false)
-                            self.view.isUserInteractionEnabled = true
+                        
                             // login success
-                            if (isSuccess) {
+                            if (success) {
+                                DataStore.shared.logged = 1
+                                DataStore.shared.currentCompany?.projects = resutl
+                                let user = AppUser()
+                                user.username = email
+                                user.password = password
+                                DataStore.shared.me = user
                                 self.presentViewController(viewControllerId: self.homeViewControllerId,storyBoard: .mainStoryboard)
                             } else {
-                                if let msg = error?.errorName{
-                                    self.showMessage(message:msg, type: .error)
-                                    
-                                }
                                 if let msg = error?.errorName{
                                     self.showMessage(message:msg, type: .error)
                                     

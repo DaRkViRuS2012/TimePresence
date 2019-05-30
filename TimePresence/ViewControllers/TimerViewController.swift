@@ -9,11 +9,10 @@
 import UIKit
 
 
-enum TimerState{
-    case work
-    case pause
-    case end
-    case stoped
+enum TimerState:String{
+    case work = "work"
+    case pause = "break"
+    case stoped = "stoped"
 }
 
 class TimerViewController: AbstractController {
@@ -22,7 +21,6 @@ class TimerViewController: AbstractController {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var startButton: UIButton!
     @IBOutlet weak var pauseButton: UIButton!
-  //  @IBOutlet weak var resetButton: UIButton!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var actionsView:UIView!
     @IBOutlet weak var stateLabel:UILabel!
@@ -33,23 +31,142 @@ class TimerViewController: AbstractController {
     var currentBackgroundDate:Date?
     var isTimerRunning = false
     var resumeTapped = false
+    var isRunningSession:Bool {
+        return currentSession?.SessionKey != nil
+    }
     
     var task:Task?
-    var projects = ["Project 1","Project 2","project 3","Nour"]
+    var projects:[Task] = []
+    var selectedProject:Task?{
+        get{
+            return DataStore.shared.currentProject
+        }
+        
+        set{
+            DataStore.shared.currentProject = newValue
+        }
+    }
     var projectsDropDown = DropDownViewController<Task>()
-    var state:TimerState = .stoped
+    var state:TimerState = .stoped{
+        didSet{
+            if state == .work{
+                if !isRunningSession{
+                    seconds = 0
+                    sessionKey = UUID().uuidString
+                    createNewSession(type:.work)
+                }else{
+                    if currentSession?.type != TimerState.work.rawValue{
+                        endCurrnetSession()
+                        seconds = 0
+                        createNewSession(type:.work)
+                    }
+                }
+                NotificationHelper.shared.cancelAll()
+                NotificationHelper.shared.scheduleNotification(notificationType: "Work",timeInterval: Double(AppConfig.numberOfSeconds))
+                self.projectTitleLabel.text = selectedProject?.name
+                runTimer()
+                stateLabel.text = state.rawValue
+                self.saveButton.isEnabled = true
+                self.actionsView.isHidden = false
+                self.startButton.isEnabled = false
+                self.pauseButton.isEnabled = true
+                self.pauseButton.setTitle("Pause",for: .normal)
+            }
+            if state == .pause{
+                if !isRunningSession{
+                    seconds = 0
+                    sessionKey = UUID().uuidString
+                    createNewSession(type:.pause)
+                }else{
+                    if currentSession?.type != TimerState.pause.rawValue{
+                        endCurrnetSession()
+                        seconds = 0
+                        createNewSession(type:.pause)
+                    }
+                }
+                
+                NotificationHelper.shared.cancelAll()
+                NotificationHelper.shared.scheduleNotification(notificationType: "Break",timeInterval: Double(AppConfig.numberOfSeconds))
+                self.projectTitleLabel.text = selectedProject?.name
+                self.saveButton.isEnabled = true
+                self.actionsView.isHidden = false
+                self.startButton.isEnabled = false
+                self.pauseButton.isEnabled = true
+                stateLabel.text = state.rawValue
+                runTimer()
+                self.pauseButton.setTitle("Resume",for: .normal)
+            }
+            
+            if state == .stoped{
+                NotificationHelper.shared.cancelAll()
+                endCurrnetSession()
+                startState()
+                self.timer.invalidate()
+                seconds = 0
+                self.timeLabel.text = DateHelper.timeString(time: TimeInterval(self.seconds))
+                self.isTimerRunning = false
+                self.pauseButton.isEnabled = false
+                stateLabel.text = nil
+                currentSession = nil
+                selectedProject = nil
+            }
+        }
+    }
+    
+    
+    
+    var currentSession:Lap?{
+        get{
+            return DataStore.shared.currentSession
+        }
+        
+        set{
+            DataStore.shared.currentSession = newValue
+        }
+    }
+    
+    var sessionKey:String?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.actionsView.isHidden = true
-//        self.resetButton.isEnabled = false
-//        self.saveButton.isEnabled = false
-        
+        getCompanyProjects()
         projectsDropDown.buttonAnchor = self.startButton
         projectsDropDown.delegate = self
-        projectsDropDown.list = projects
+        projectsDropDown.tag = "projects"
+        projectsDropDown.loadData = getCompanyProjects
+        
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchProjectListFormAPI()
+        startApp()
+        ActionSyncLocations.execute()
+    }
+
+    func getCompanyProjects(){
+        guard let company = DataStore.shared.currentCompany else {return}
+        projects = company.projects
+        projectsDropDown.list = projects.map{$0.name ?? ""}
+    }
+    
+    func fetchProjectListFormAPI(){
+        guard let user = DataStore.shared.me?.username , let pass = DataStore.shared.me?.password , let db = DataStore.shared.currentCompany?.DB else {return}
+        ApiManager.shared.getProjectList(companyDB: db, username: user, password: pass) { (success, error, resutl) in
+            if success{
+                self.projects = resutl
+                DataStore.shared.currentCompany?.projects = resutl
+                self.getCompanyProjects()
+            }
+            
+            if error != nil{
+                
+            }
+        }
+        
+    }
     
     override func customizeView() {
         super.customizeView()
@@ -77,21 +194,18 @@ class TimerViewController: AbstractController {
         self.pauseButton.setTitle("Pause", for: .normal)
         seconds = 0
         projectTitleLabel.text = nil
-        stateLabel.text = nil
-        
     }
     
     @objc func pauseApp(){
-        self.stop() //invalidate timer
         self.currentBackgroundDate = Date()
     }
     
     @objc func startApp(){
-        if let date = self.currentBackgroundDate{
+        if let date = self.currentSession?.startTime{
         let difference = date.timeIntervalSince(Date())
-        seconds += abs(Int(difference))
-        self.runTimer() //start timer
-        self.currentBackgroundDate = nil
+        state = TimerState(rawValue: currentSession?.type ?? "work") ?? .work
+        seconds = abs(Int(difference))
+        self.sessionKey = self.currentSession?.SessionKey
         }
     }
     
@@ -101,7 +215,6 @@ class TimerViewController: AbstractController {
         let alert = UIAlertController(title: "Close..??", message: "your timer won't be saved", preferredStyle: .alert)
         
         let okAction = UIAlertAction(title: "Ok", style: .default) { (actio) in
-            self.stop()
             self.removeObserve()
             self.popOrDismissViewControllerAnimated(animated: true)
         }
@@ -116,26 +229,54 @@ class TimerViewController: AbstractController {
         self.present(alert, animated: true, completion: nil)
     }
     
-
-    @IBAction func startTimer(_ sender: UIButton) {
-       
-    }
-    
     
     func start(){
         if isTimerRunning == false {
-            runTimer()
-            stateLabel.text = "Working"
-            self.startButton.isEnabled = false
-            self.pauseButton.isEnabled = true
             state = .work
         }
+       
+    }
+    
+    func createNewSession(type:TimerState){
+        guard let url = DataStore.shared.currentURL?.url ,
+            let companyDb = DataStore.shared.currentCompany?.DB,
+            let taskId = selectedProject?.ID,
+            let projectId = selectedProject?.projectId,
+            let ip = WifiHelper.getIP(),
+            let mac = WifiHelper.getDeviceID(),
+            let sessionKey = self.sessionKey else{return}
+        
+        let location = DataStore.shared.myLocation ?? Location()
+        let newSession = Lap()
+        newSession.url = url
+        newSession.company = companyDb
+        newSession.projectID = projectId
+        newSession.SessionKey = sessionKey
+        newSession.startTime = Date()
+        newSession.type = type.rawValue
+        newSession.userIP = ip
+        newSession.lat = location.latitiued ?? ""
+        newSession.long = location.longtiued ?? ""
+        newSession.userLocation = location
+        newSession.clientType = "ios"
+        newSession.mac = mac
+        newSession.taskID = taskId
+        newSession.save()
+        currentSession = newSession
+    }
+    
+    func endCurrnetSession(){
+        if let newSession = currentSession{
+            newSession.endTime = Date()
+            newSession.seconds = seconds
+            newSession.save()
+        }
+        currentSession = nil
+        
     }
     
     func runTimer() {
         if isTimerRunning == false {
-        self.saveButton.isEnabled = true
-        self.actionsView.isHidden = false
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: (#selector(updateTimer)), userInfo: nil, repeats: true)
         isTimerRunning = true
         addObserve()
@@ -144,39 +285,18 @@ class TimerViewController: AbstractController {
     
     @IBAction func pauseResume(_ sender: UIButton) {
         if state == .work{
-            self.timer.invalidate()
-            self.timeLabel.text = DateHelper.timeString(time: TimeInterval(self.seconds))
-            self.isTimerRunning = false
-//            self.pauseButton.isEnabled = false
-            stateLabel.text = "Paused"
             state = .pause
-            removeObserve()
-            self.pauseButton.setTitle("Resume",for: .normal)
         } else {
-            runTimer()
-            self.resumeTapped = false
-            isTimerRunning = true
             state = .work
-            stateLabel.text = "Working"
-            self.pauseButton.setTitle("Pause",for: .normal)
         }
     }
     
     @IBAction func reset(_ sender: UIButton) {
-        self.stop()
+        state = .stoped
         removeObserve()
     }
     
-    func stop(){
-        self.timer.invalidate()
-        self.timeLabel.text = DateHelper.timeString(time: TimeInterval(self.seconds))
-        self.isTimerRunning = false
-        self.pauseButton.isEnabled = false
-        stateLabel.text = "Paused"
-//        self.startButton.isEnabled = true
-    }
-    
-    
+
     
     @objc func updateTimer() {
             seconds += 1
@@ -184,33 +304,22 @@ class TimerViewController: AbstractController {
     }
     
     @IBAction func save(_ sender: UIButton) {
-        if isTimerRunning{
-            stop()
-        }
+
         
-        let alert = UIAlertController(style: .alert, title: "Save", message: "Enter Note")
-        
-        alert.addTextField { (textFiled) in
-            textFiled.placeholder = "Note"
-            textFiled.autocapitalizationType = .none
-            textFiled.autocorrectionType = .no
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (_) in
+        let alert = UIAlertController(style: .alert, title: "End Your Session", message: "Sure ?")
+    
+        let cancelAction = UIAlertAction(title: "No", style: .cancel) { (_) in
             
         }
         alert.addAction(cancelAction)
         
-        alert.addAction(title: "OK", style: .default) { (action) in
-            if let title = alert.textFields?.first?.text{
-//                var newLap  = Lap(ID: -1, taskID: self.task?.ID, seconds: self.seconds, date: Date(),title:title)
+        alert.addAction(title: "Yes", style: .default) { (action) in
+//            if let title = alert.textFields?.first?.text{
 //
-//                newLap.save()
-                self.showMessage(message: "Done", type: .success)
-//                self.popOrDismissViewControllerAnimated(animated: true)
-                self.startState()
-                self.state = .end
 //
-            }
+//            }
+               self.showMessage(message: "Done", type: .success)
+            self.state = .stoped
         }
         self.present(alert, animated: true, completion: nil)
     }
@@ -221,8 +330,9 @@ extension TimerViewController:DropDownDelegete{
         
     }
     
-    func didSelectetItem<T>(dropDown: DropDownViewController<T>, model: T?, index: Int) where T : BaseModel {
-        self.projectTitleLabel.text = self.projects[index]
+    func didSelectetItem<T>(tag:String,dropDown: DropDownViewController<T>, model: T?, index: Int) where T : BaseModel {
+        self.projectTitleLabel.text = self.projects[index].name
+        selectedProject = self.projects[index]
         start()
     }
 }

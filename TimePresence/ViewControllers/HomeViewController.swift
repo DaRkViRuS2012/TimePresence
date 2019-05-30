@@ -51,7 +51,7 @@ extension HomeViewController:UITableViewDataSource,UITableViewDelegate{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let task = Task.all()[indexPath.row]
-        cell.textLabel?.text = task.title
+        cell.textLabel?.text = task.name
         
         return cell
     }
@@ -72,7 +72,7 @@ extension HomeViewController:UITableViewDataSource,UITableViewDelegate{
         if editingStyle == .delete {
             
             let task = Task.all()[indexPath.row]
-            let alert = UIAlertController(title: "Delete", message: "you are about to delete \(task.title)", preferredStyle:.alert)
+            let alert = UIAlertController(title: "Delete", message: "you are about to delete \(task.name ?? "")", preferredStyle:.alert)
             alert.addAction(UIAlertAction(title: "Ok", style: .destructive, handler: { (action) in
                 task.delete()
                 tableView.deleteRows(at: [indexPath], with: .fade)

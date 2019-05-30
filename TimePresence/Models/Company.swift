@@ -1,31 +1,31 @@
 //
-//  Service.swift
+//  Company.swift
 //  TimePresence
 //
-//  Created by Nour  on 5/6/19.
+//  Created by Nour  on 5/18/19.
 //  Copyright © 2019 Nour . All rights reserved.
 //
 
 import Foundation
 import SwiftyJSON
-class  Service:BaseModel {
+
+class Company:BaseModel{
+    
+    
     var ID:Int64?
     var title:String?
-    var url:String?
-    var date:Date?
-    var userCode:String?
-    
+    var DB:String?
+    var urlId:Int64?
     
     override init() {
         super.init()
     }
     
-    init(ID:Int64?,title:String?,url:String?,date:Date?,userCode:String?) {
+    init(ID:Int64?,title:String?,DB:String?,urlId:Int64?) {
         self.ID = ID
         self.title = title
-        self.url = url
-        self.date = date
-        self.userCode = userCode
+        self.urlId = urlId
+        self.DB = DB
         super.init()
         self.modelTitle = self.title
     }
@@ -33,35 +33,46 @@ class  Service:BaseModel {
     public required init(json: JSON) {
         super.init(json: json)
         ID = json["ID"].int64
-        title = json["title"].string
-        url = json["url"].string
-        if let value = json["date"].string{
-            date = DateHelper.getDateFromString(value)
-        }
-        userCode = json["userCode"].string
+        title = json["CompanyName"].string
+        urlId = json["urlId"].int64
+        DB = json["CompanyDB"].string
         self.modelTitle = title
     }
     
     override func dictionaryRepresentation() -> [String : Any] {
         var dictionary = super.dictionaryRepresentation()
         dictionary["ID"] = ID
-        dictionary["title"] = title
-        dictionary["url"] = url
-        if let value = date{
-            dictionary["date"] = DateHelper.getStringFromDate(value)
-        }
-        dictionary["userCode"] = userCode
-        
+        dictionary["CompanyName"] = title
+        dictionary["urlId"] = urlId
+        dictionary["CompanyDB"] = DB
         return dictionary
     }
     
     func save(){
-        self.ID = DatabaseManagement.shared.addService(service: self)
+        if ID == nil{
+            self.ID = DatabaseManagement.shared.addCompany(company: self)
+        }
     }
     
+    var projects:[Task]{
+        get{
+            guard let id = self.ID else {return []}
+            return DatabaseManagement.shared.queryCompanyProjects(companyId: id)
+        }
+        set{
+            guard let id = self.ID else {return}
+            for project in newValue{
+                if project.companyId == nil{
+                    project.companyId = id
+                    project.save()
+                }
+            }
+        }
+    }
     
     var laps:[Lap]{
-        return DatabaseManagement.shared.queryTaskLaps(taskId: self.ID!)
+        guard let id = self.ID else {return []}
+        return DatabaseManagement.shared.queryTaskLaps(taskId: id)
     }
     
     var totalseconds:Int {
@@ -83,5 +94,6 @@ class  Service:BaseModel {
         }
         _ = DatabaseManagement.shared.deleteTask(Id: self.ID!)
     }
+
     
 }

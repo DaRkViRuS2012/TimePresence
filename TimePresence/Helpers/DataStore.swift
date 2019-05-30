@@ -31,25 +31,50 @@ class DataStore :NSObject {
     private let CACHE_KEY_MY_LOCATION = "myLocation"
     private let CACHE_KEY_ON_GOING_ORDER = "onGoingOrderId"
     private let CACHE_KEY_URL = "url"
+    private let CACHE_KEY_COMPANY = "company"
+    private let CACHE_KEY_PROJECTS = "projects"
+    private let CACHE_KEY_LOGGED = "logged"
+    private let CACHE_KEY_CURRENT_SESSION = "currentSession"
+    private let CACHE_KEY_CURRENT_PROJECT = "currentProject"
+    private let CACHE_KEY_CURRENT_NUMBER_OF_RECORDS = "numberOfRecords"
+    private let CACHE_KEY_CURRENT_TIME = "time"
+    private let CACHE_KEY_CURRENT_SYNC_TIME = "Synctime"
+    private let CACHE_KEY_CURRENT_LOCATIONS = "locations"
     //MARK: Temp data holders
     //keep reference to the written value in another private property just to prevent reading from cache each time you use this var
     private var _me:AppUser?
     private var _my_location:Location?
     private var _service:Service?
-   // private var _products:[Product] = []
-    
-    
-    
-    
-    
+    private var _logged:Int?
+    private var _company:Company?
+    private var _projects:[Task] = []
+    private var _current_project:Task?
+    private var _current_session:Lap?
+    private var _number_of_records:Int?
+    private var _number_of_seconds:Int?
+    private var _sync_time:String?
+    private var _locations:[Lap] = []
+
     // user loggedin flag
     var isLoggedin: Bool {
-        if let token = me?.code, !token.isEmpty {
+        if let token = logged, token == 1 {
             return true
         }
         return false
     }
 
+    
+    public var logged:Int?{
+        set{
+            _logged = newValue
+            saveIntWithKey(intToStore: _logged!, key: CACHE_KEY_LOGGED)
+        }
+        
+        get{
+            _logged = loadIntForKey(key: CACHE_KEY_LOGGED)
+            return _logged
+        }
+    }
 
     
     
@@ -68,6 +93,47 @@ class DataStore :NSObject {
         }
     }
     
+    
+    public var numberOfRecords:Int?{
+        set {
+            _number_of_records = newValue
+            saveIntWithKey(intToStore: _number_of_records!, key: CACHE_KEY_CURRENT_NUMBER_OF_RECORDS)
+        }
+        get {
+            if (_number_of_records == nil) {
+                _number_of_records = loadIntForKey(key: CACHE_KEY_CURRENT_NUMBER_OF_RECORDS)
+            }
+            return _number_of_records
+        }
+    }
+    
+    public var numberOfSeconds:Int?{
+        set {
+            _number_of_seconds = newValue
+            saveIntWithKey(intToStore: _number_of_seconds!, key: CACHE_KEY_CURRENT_TIME)
+        }
+        get {
+            if (_number_of_seconds == nil) {
+                _number_of_seconds = loadIntForKey(key: CACHE_KEY_CURRENT_TIME)
+            }
+            return _number_of_seconds
+        }
+    }
+    
+    
+    public var syncTime:String?{
+        set {
+            _sync_time = newValue
+            saveStringWithKey(stringToStore: _sync_time, key: CACHE_KEY_CURRENT_SYNC_TIME)
+        }
+        
+        get {
+            if (_sync_time == nil) {
+                _sync_time = loadStringForKey(key: CACHE_KEY_CURRENT_SYNC_TIME)
+            }
+            return _sync_time
+        }
+    }
     
     public var myLocation:Location?{
         set{
@@ -97,26 +163,78 @@ class DataStore :NSObject {
         }
     }
     
+    public var currentCompany:Company?{
+        set{
+            _company = newValue
+            saveBaseModelObject(object: _company, withKey: CACHE_KEY_COMPANY)
+        }
+        get{
+            if (_company == nil) {
+                _company = loadBaseModelObjectForKey(key: CACHE_KEY_COMPANY)
+            }
+            return _company
+        }
+    }
     
-  
+    
+    
+    
+    public var currentSession:Lap?{
+        set{
+            _current_session = newValue
+            saveBaseModelObject(object: _current_session, withKey: CACHE_KEY_CURRENT_SESSION)
+        }
+        get{
+            if (_current_session == nil) {
+                _current_session = loadBaseModelObjectForKey(key: CACHE_KEY_CURRENT_SESSION)
+            }
+            return _current_session
+        }
+    }
+    
+    public var currentProject:Task?{
+        set{
+            _current_project = newValue
+            saveBaseModelObject(object: _current_project, withKey: CACHE_KEY_CURRENT_PROJECT)
+        }
+        get{
+            if (_current_project == nil) {
+                _current_project = loadBaseModelObjectForKey(key: CACHE_KEY_CURRENT_PROJECT)
+            }
+            return _current_project
+        }
+    }
+    
+    
+    public var projects:[Task] {
+        set{
+            _projects = newValue
+            saveBaseModelArray(array: _projects, withKey: CACHE_KEY_PROJECTS)
+        }
+        get{
+            if _projects.isEmpty{
+                _projects = loadBaseModelArrayForKey(key: CACHE_KEY_PROJECTS)
+            }
+            return _projects
+        }
+    }
 
     
-//    public var products :[Product]{
-//
-//        set{
-//            _products = newValue
-//            saveBaseModelArray(array: _products , withKey: CACHE_KEY_PRODUCTS)
-//            NotificationCenter.default.post(name: .notificationRefreshProducts, object: nil)
-//        }
-//        get {
-//
-////            if _products.isEmpty{
-////                _products = loadBaseModelArrayForKey(key: CACHE_KEY_PRODUCTS)
-////            }
-//            return _products
-//        }
-//
-//    }
+    
+    
+    public var locations :[Lap]{
+
+        set{
+            _locations = newValue
+            saveBaseModelArray(array: _locations , withKey: CACHE_KEY_CURRENT_LOCATIONS)
+        }
+        get {
+            if _locations.isEmpty{
+                _locations = loadBaseModelArrayForKey(key: CACHE_KEY_CURRENT_LOCATIONS)
+            }
+            return _locations
+        }
+    }
     
    
     
@@ -204,6 +322,7 @@ class DataStore :NSObject {
     public func logout() {
         clearCache()
         me = nil
+        logged = 0
         
     }
 }

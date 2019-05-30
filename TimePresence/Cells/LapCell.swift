@@ -22,12 +22,12 @@ class LapCell: UITableViewCell {
                 return
             }
             
-            if let date = lap.date{
-                    self.dateLabel.text = DateHelper.getStringFromDate(date)
-            }
+//            if let date = lap.date{
+//                    self.dateLabel.text = DateHelper.getStringFromDate(date)
+//            }
             
             self.timeLabel.text = "\(DateHelper.timeString(time: TimeInterval(lap.seconds)))"
-            self.titleLabel.text = lap.title
+            self.titleLabel.text = ""
         }
         
     }

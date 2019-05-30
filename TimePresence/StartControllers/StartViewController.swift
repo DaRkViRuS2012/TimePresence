@@ -24,7 +24,7 @@ class StartViewController: AbstractController {
         if DataStore.shared.isLoggedin {
              self.performSegue(withIdentifier: "HomeViewSegue", sender: self)
         }else{
-             self.performSegue(withIdentifier: "startHomeSegue", sender: self)
+             self.performSegue(withIdentifier: "urlSegue", sender: self)
         }
         
 //        if DataStore.shared.isLoggedin {

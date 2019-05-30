@@ -9,7 +9,7 @@
 import SwiftyJSON
 import CoreLocation
 
-class Location:BaseModel,CustomStringConvertible {
+class Location:BaseModel {
     // MARK: Properties
 //    public var id:Int!
     public var googleID:String?
@@ -45,8 +45,8 @@ class Location:BaseModel,CustomStringConvertible {
     private let kId = "id"
     private let kGoogleID = "google_place_id"
     private let kName = "name"
-    private let kLat = "lat"
-    private let kLong = "lng"
+    private let kLat = "latitudes"
+    private let kLong = "longitude"
     private let kPhoto = "photo"
     private let kAddress = "address"
     private let kFlat = "flat"
@@ -86,6 +86,8 @@ class Location:BaseModel,CustomStringConvertible {
     init(lat:Double,long:Double) {
         self.lat = lat
         self.long = long
+        self.latitiued = "\(lat)"
+        self.longtiued = "\(long)"
         super.init()
     }
     
@@ -148,6 +150,7 @@ class Location:BaseModel,CustomStringConvertible {
         if let value  = long { dictionary[kLong] = value}
         if let value  = photo { dictionary[kPhoto] = value}
         if let value = city { dictionary[kAddress] = value}
+        dictionary["id"] = nil
         return dictionary
     }
     
@@ -222,7 +225,7 @@ class Location:BaseModel,CustomStringConvertible {
     }
     
     
-    var description: String{
+   override var description: String{
         return "The Location Lat is \(self.lat) \n long is \(self.long)"
     }
     

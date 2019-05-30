@@ -83,9 +83,7 @@ class AbstractController: UIViewController, UITextFieldDelegate, UIGestureRecogn
         
     }
     
-    
-    
-    
+
     
     
     /// Navigation bar custome back button

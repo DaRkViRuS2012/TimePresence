@@ -12,19 +12,46 @@ import SwiftyJSON
 class Task:BaseModel {
     
     var ID:Int64?
-    var title:String?
+    var name:String?
+    var projectId:Int?
     var date:Date?
     var userCode:String?
     var serviceId:Int64?
+    var companyId:Int64?
+    
+    init(ID:Int64?,name:String?,date:Date?,projectId:Int?,companyId:Int64?) {
+        self.ID = ID
+        self.name = name
+        self.date = date
+        self.companyId = companyId
+        self.projectId = projectId
+        super.init()
+        self.modelTitle = name
+    }
     
     override init() {
         super.init()
     }
     required init(json: JSON) {
         super.init(json: json)
-        
+        self.ID = json["ID"].int64
+        self.name = json["Name"].string
+        self.projectId = json["ProjectId"].int
+        if let value  = json["START"].string{
+            date = DateHelper.getDateFromISOString(value)
+        }
     }
     
+    override func dictionaryRepresentation() -> [String : Any] {
+        var dictionary = super.dictionaryRepresentation()
+        dictionary["ID"] = self.ID
+        dictionary["ProjectId"] = projectId
+        dictionary["Name"] = name
+        if let value = date{
+            dictionary["START"] = DateHelper.getISOStringFromDate(value)
+        }
+        return dictionary
+    }
      func save(){
       self.ID = DatabaseManagement.shared.addTask(task: self)
     }
@@ -50,51 +77,10 @@ class Task:BaseModel {
         for lap in laps{
             lap.delete()
         }
-        DatabaseManagement.shared.deleteTask(Id: self.ID!)
-    }
-}
-
-
-class Lap:BaseModel{
-
-    var ID:Int64?
-    var taskID:Int64?
-    var seconds:Int = 0
-    var date:Date?
-    var title:String?
-    var taskId:String?
-    var company:String?
-    var userId:String?
-    var type:String?
-    var createdDate:String?
-    var startTime:String?
-    var endTime:String?
-    var mac:String?
-    var lat:String?
-    var long:String?
-    var synced:String?
-    var approved:String?
-    
-    
-    
-    override init() {
-        super.init()
-    }
-    required init(json: JSON) {
-        super.init(json: json)
-        
-    }
-    var task:Task? {
-        return DatabaseManagement.shared.queryTaskById(id: self.taskID!)
+        _ = DatabaseManagement.shared.deleteTask(Id: self.ID!)
     }
     
-    
-    func save(){
-        self.ID = DatabaseManagement.shared.addLap(lap: self)
-    }
-    
-    
-     func delete(){
-        _ = DatabaseManagement.shared.deleteLap(Id: self.ID!)
+    override var description: String{
+        return "\(id) \(name) \(projectId)"
     }
 }

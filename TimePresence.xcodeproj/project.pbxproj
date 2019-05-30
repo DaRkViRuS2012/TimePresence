@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1412694D229DAB380083DFB2 /* SyncResponce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1412694C229DAB380083DFB2 /* SyncResponce.swift */; };
+		1412694F229DAD750083DFB2 /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1412694E229DAD750083DFB2 /* NotificationHelper.swift */; };
 		141EAC0F2280BD5500A7031D /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141EAC0E2280BD5500A7031D /* Service.swift */; };
 		14268476228487DB006D6FDD /* DropDownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14268475228487DA006D6FDD /* DropDownViewController.swift */; };
 		146BDAD622858BCB00F3302D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 146BDAD522858BCB00F3302D /* SettingsViewController.swift */; };
@@ -100,12 +102,19 @@
 		1472EEBD228033530038BBCB /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1472EE62228033520038BBCB /* HomeViewController.swift */; };
 		1472EEC922804A950038BBCB /* NewURLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1472EEC822804A950038BBCB /* NewURLViewController.swift */; };
 		1472EECB22804AAB0038BBCB /* URLSViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1472EECA22804AAB0038BBCB /* URLSViewController.swift */; };
+		1490AAD222901E3A00C5E7C0 /* Company.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1490AAD122901E3A00C5E7C0 /* Company.swift */; };
+		1490AAD4229026F700C5E7C0 /* APIResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1490AAD3229026F700C5E7C0 /* APIResult.swift */; };
+		14B77005229896D000C5ED9F /* Lap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B77004229896D000C5ED9F /* Lap.swift */; };
+		14B77007229898B000C5ED9F /* WifiHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B77006229898B000C5ED9F /* WifiHelper.swift */; };
+		14B7700B22996AB700C5ED9F /* SyncViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B7700A22996AB700C5ED9F /* SyncViewController.swift */; };
 		14C6B1672284AE7B006932F4 /* UIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C6B1662284AE7B006932F4 /* UIButton.swift */; };
 		14FE6610228477D700E77425 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14FE660F228477D700E77425 /* LaunchScreen.storyboard */; };
 		A0F8E0F3A56DC3C0FFA1B92E /* Pods_TimePresence.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 325734C0CE3F4D06089A763F /* Pods_TimePresence.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1412694C229DAB380083DFB2 /* SyncResponce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncResponce.swift; sourceTree = "<group>"; };
+		1412694E229DAD750083DFB2 /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 		141EAC0E2280BD5500A7031D /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		14268475228487DA006D6FDD /* DropDownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDownViewController.swift; sourceTree = "<group>"; };
 		146BDAD522858BCB00F3302D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -202,6 +211,11 @@
 		1472EE62228033520038BBCB /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		1472EEC822804A950038BBCB /* NewURLViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewURLViewController.swift; sourceTree = "<group>"; };
 		1472EECA22804AAB0038BBCB /* URLSViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSViewController.swift; sourceTree = "<group>"; };
+		1490AAD122901E3A00C5E7C0 /* Company.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Company.swift; sourceTree = "<group>"; };
+		1490AAD3229026F700C5E7C0 /* APIResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIResult.swift; sourceTree = "<group>"; };
+		14B77004229896D000C5ED9F /* Lap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lap.swift; sourceTree = "<group>"; };
+		14B77006229898B000C5ED9F /* WifiHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiHelper.swift; sourceTree = "<group>"; };
+		14B7700A22996AB700C5ED9F /* SyncViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncViewController.swift; sourceTree = "<group>"; };
 		14C6B1662284AE7B006932F4 /* UIButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButton.swift; sourceTree = "<group>"; };
 		14FE660F228477D700E77425 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		325734C0CE3F4D06089A763F /* Pods_TimePresence.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TimePresence.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -352,6 +366,10 @@
 				1472EE5A228033500038BBCB /* Task.swift */,
 				1472EE27228033430038BBCB /* Location.swift */,
 				141EAC0E2280BD5500A7031D /* Service.swift */,
+				1490AAD122901E3A00C5E7C0 /* Company.swift */,
+				1490AAD3229026F700C5E7C0 /* APIResult.swift */,
+				14B77004229896D000C5ED9F /* Lap.swift */,
+				1412694C229DAB380083DFB2 /* SyncResponce.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -364,6 +382,8 @@
 				1472EE0E228033400038BBCB /* DateHelper.swift */,
 				1472EE482280334A0038BBCB /* DataStore.swift */,
 				1472EE082280333F0038BBCB /* FireBaseHelper.swift */,
+				14B77006229898B000C5ED9F /* WifiHelper.swift */,
+				1412694E229DAD750083DFB2 /* NotificationHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -384,6 +404,7 @@
 				1472EEC822804A950038BBCB /* NewURLViewController.swift */,
 				1472EECA22804AAB0038BBCB /* URLSViewController.swift */,
 				146BDAD522858BCB00F3302D /* SettingsViewController.swift */,
+				14B7700A22996AB700C5ED9F /* SyncViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -483,6 +504,11 @@
 					1472EDED228029C70038BBCB = {
 						CreatedOnToolsVersion = 10.1;
 						LastSwiftMigration = 1010;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -590,13 +616,16 @@
 				1472EE6F228033530038BBCB /* VerificationViewController.swift in Sources */,
 				1472EEBB228033530038BBCB /* GradientSlider.swift in Sources */,
 				1472EE74228033530038BBCB /* NSlayoutConstraint.swift in Sources */,
+				14B77007229898B000C5ED9F /* WifiHelper.swift in Sources */,
 				14268476228487DB006D6FDD /* DropDownViewController.swift in Sources */,
 				1472EE70228033530038BBCB /* Styles.swift in Sources */,
 				1472EE65228033530038BBCB /* SocialManager.swift in Sources */,
 				1472EE76228033530038BBCB /* LabsViewController.swift in Sources */,
 				1472EE8A228033530038BBCB /* NewTaskViewController.swift in Sources */,
+				1490AAD222901E3A00C5E7C0 /* Company.swift in Sources */,
 				1472EEA7228033530038BBCB /* RNLoadingButton.swift in Sources */,
 				1472EE6B228033530038BBCB /* ApiManager.swift in Sources */,
+				14B7700B22996AB700C5ED9F /* SyncViewController.swift in Sources */,
 				1472EE79228033530038BBCB /* XUITextField.swift in Sources */,
 				1472EE9A228033530038BBCB /* AbstractController.swift in Sources */,
 				1472EE68228033530038BBCB /* UITextView+Extensions.swift in Sources */,
@@ -618,6 +647,7 @@
 				1472EE9C228033530038BBCB /* RoundedButton.swift in Sources */,
 				1472EEA6228033530038BBCB /* FireBaseManager.swift in Sources */,
 				1472EE96228033530038BBCB /* TimerViewController.swift in Sources */,
+				1412694D229DAB380083DFB2 /* SyncResponce.swift in Sources */,
 				1472EEB2228033530038BBCB /* UIViewController.swift in Sources */,
 				14C6B1672284AE7B006932F4 /* UIButton.swift in Sources */,
 				1472EE6A228033530038BBCB /* UISegmentedControl+Extensions.swift in Sources */,
@@ -628,6 +658,7 @@
 				1472EE84228033530038BBCB /* UIImage.swift in Sources */,
 				1472EEAE228033530038BBCB /* String+Extensions.swift in Sources */,
 				1472EEBD228033530038BBCB /* HomeViewController.swift in Sources */,
+				14B77005229896D000C5ED9F /* Lap.swift in Sources */,
 				1472EEAB228033530038BBCB /* LocationHelper.swift in Sources */,
 				1472EEB4228033530038BBCB /* UIBarItemButton.swift in Sources */,
 				1472EEA0228033530038BBCB /* AppUser.swift in Sources */,
@@ -644,6 +675,8 @@
 				1472EE81228033530038BBCB /* Collection.swift in Sources */,
 				1472EE95228033530038BBCB /* XUILabel.swift in Sources */,
 				1472EE6D228033530038BBCB /* DateHelper.swift in Sources */,
+				1490AAD4229026F700C5E7C0 /* APIResult.swift in Sources */,
+				1412694F229DAD750083DFB2 /* NotificationHelper.swift in Sources */,
 				141EAC0F2280BD5500A7031D /* Service.swift in Sources */,
 				1472EE73228033530038BBCB /* UIView2.swift in Sources */,
 				1472EE90228033530038BBCB /* UILable.swift in Sources */,
@@ -798,7 +831,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = E5963CA2JF;
 				INFOPLIST_FILE = TimePresence/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -821,7 +854,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = E5963CA2JF;
 				INFOPLIST_FILE = TimePresence/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
