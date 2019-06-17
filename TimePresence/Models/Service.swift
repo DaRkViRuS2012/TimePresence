@@ -78,10 +78,7 @@ class  Service:BaseModel {
     }
     
     func delete(){
-        for lap in laps{
-            lap.delete()
-        }
-        _ = DatabaseManagement.shared.deleteTask(Id: self.ID!)
+        _ = DatabaseManagement.shared.deleteService(Id: self.ID!)
     }
     
 }

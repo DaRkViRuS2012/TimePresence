@@ -38,6 +38,8 @@ class DataStore :NSObject {
     private let CACHE_KEY_CURRENT_PROJECT = "currentProject"
     private let CACHE_KEY_CURRENT_NUMBER_OF_RECORDS = "numberOfRecords"
     private let CACHE_KEY_CURRENT_TIME = "time"
+    private let CACHE_KEY_LOGS_SYNC_PERIOD = "logPeriod"
+    private let CACHE_KEY_LOCATIONS_SYNC_PERIOD = "locationsPeriod"
     private let CACHE_KEY_CURRENT_SYNC_TIME = "Synctime"
     private let CACHE_KEY_CURRENT_LOCATIONS = "locations"
     //MARK: Temp data holders
@@ -52,6 +54,8 @@ class DataStore :NSObject {
     private var _current_session:Lap?
     private var _number_of_records:Int?
     private var _number_of_seconds:Int?
+    private var _log_sync_period:Int?
+    private var _location_sync_period:Int?
     private var _sync_time:String?
     private var _locations:[Lap] = []
 
@@ -120,6 +124,32 @@ class DataStore :NSObject {
         }
     }
     
+    public var logSyncPeriod:Int?{
+        set {
+            _log_sync_period = newValue
+            saveIntWithKey(intToStore: _log_sync_period!, key: CACHE_KEY_LOGS_SYNC_PERIOD)
+        }
+        get {
+            if (_log_sync_period == nil) {
+                _log_sync_period = loadIntForKey(key: CACHE_KEY_LOGS_SYNC_PERIOD)
+            }
+            return _log_sync_period
+        }
+    }
+    
+    
+    public var locationSyncPeriod:Int?{
+        set {
+            _location_sync_period = newValue
+            saveIntWithKey(intToStore: _location_sync_period!, key: CACHE_KEY_LOCATIONS_SYNC_PERIOD)
+        }
+        get {
+            if (_location_sync_period == nil) {
+                _location_sync_period = loadIntForKey(key: CACHE_KEY_LOCATIONS_SYNC_PERIOD)
+            }
+            return _location_sync_period
+        }
+    }
     
     public var syncTime:String?{
         set {

@@ -605,7 +605,7 @@ class ApiManager: NSObject {
     // get companies
     
     func getCompanies(completionBlock: @escaping (_ success: Bool, _ error: ServerError?,_ response:[Company]) -> Void) {
-        let categoriesListURL = "\(baseURL)/MobileApp/CompanyList"
+        let categoriesListURL = "\(DataStore.shared.currentURL?.url ?? "")/MobileApp/CompanyList"
         Alamofire.request(categoriesListURL, method: .get, headers: headers).responseJSON { (responseObject) -> Void in
             print(responseObject)
             if responseObject.result.isSuccess {
@@ -622,7 +622,8 @@ class ApiManager: NSObject {
                         let result = resultObject.data
                         completionBlock(true, nil,result ?? [])
                     }else{
-                        completionBlock(false, ServerError.unknownError,[])
+                        let error = ServerError(json: jsonResponse) ?? ServerError.unknownError
+                        completionBlock(false, error,[])
                     }
                     
                 }
@@ -641,7 +642,7 @@ class ApiManager: NSObject {
     
     // get project List
     func getProjectList(companyDB:String,username:String,password:String,completionBlock: @escaping (_ success: Bool, _ error: ServerError?,_ response:[Task]) -> Void) {
-        let categoriesListURL = "\(baseURL)/MobileApp/ProjectList"
+        let categoriesListURL = "\(DataStore.shared.currentURL?.url ?? "")/MobileApp/ProjectList"
         
         let parameters : [String : Any] = [
             "companydb": companyDB,
@@ -662,9 +663,13 @@ class ApiManager: NSObject {
                     let resultObject = APIResult<Task>(json:jsonResponse)
                     if let haserror = resultObject.has_Error,!haserror {
                         let result = resultObject.data
+                        if let parm = resultObject.param , let interval = parm.interval{
+                            DataStore.shared.locationSyncPeriod = interval
+                        }
                         completionBlock(true, nil,result ?? [])
                     }else{
-                        completionBlock(false, ServerError.unknownError,[])
+                        let error = ServerError(json: jsonResponse) ?? ServerError.unknownError
+                        completionBlock(false, error,[])
                     }
                     
                 }
@@ -685,34 +690,9 @@ class ApiManager: NSObject {
 
     
     // sync
-    
-    /*
-     "companydb": "SBODemoCH",
-     "username": "manager",
-     "password": "1234",
-     "logs": [
-     {
-     "id": 1,
-     "sessionKey": "111111111111111111",
-     "url": "http://localhost:61408/MobileApp",
-     "companyDB": "SBODemoCH",
-     "projectId": 4,
-     "startTime": "2019-01-01T00:00:00",
-     "endTime": "2019-01-01T10:00:00",
-     "totalMinutes": 4,
-     "macId": "11111111111111111111111",
-     "clientType": "ios",
-     "userLocation": {
-     "longitude": "3333",
-     "latitudes": "5555"
-     },
-     "userIP": "129.129.1.1",
-     "workType": "break",
-     "approved": false
-     },
-     */
+
     func syncLogs(companyDB:String,username:String,password:String,logs:[Lap],completionBlock: @escaping (_ success: Bool, _ error: ServerError?,_ response:[SyncResponce]) -> Void) {
-        let categoriesListURL = "\(baseURL)/MobileApp/SaveLog"
+        let categoriesListURL = "\(DataStore.shared.currentURL?.url ?? "")/MobileApp/SaveLog"
         
         
         var logsDictionary:[[String:Any]] = []
@@ -767,7 +747,7 @@ class ApiManager: NSObject {
     
     
     func syncLocations(companyDB:String,username:String,password:String,locations:[Lap],completionBlock: @escaping (_ success: Bool, _ error: ServerError?,_ response:[SyncResponce]) -> Void) {
-        let categoriesListURL = "\(baseURL)/MobileApp/SaveLocation"
+        let categoriesListURL = "\(DataStore.shared.currentURL?.url ?? "")/MobileApp/SaveLocation"
         
         var logsDictionary:[[String:Any]] = []
         for log in locations{
@@ -853,9 +833,9 @@ struct ServerError {
         var errorMessage:String {
             switch(self) {
                 case .unknown:
-                    return "ERROR_UNKNOWN".localized
+                    return "Some thing went wrong please try again or connect the admin".localized
                 case .connection:
-                    return "ERROR_NO_CONNECTION".localized
+                    return "Can't Connect please check Enternet and make sure you entered a correct URL".localized
                 case .authorization:
                     return "ERROR_NOT_AUTHORIZED".localized
                 case .alreadyExists:
@@ -879,7 +859,7 @@ struct ServerError {
     public static var connectionError: ServerError{
         get {
             var error = ServerError()
-            error.code = ErrorType.connection.rawValue
+            error.errorName = "Can't Connect please check Internet and make sure you entered a correct URL"
             return error
         }
     }
@@ -887,7 +867,7 @@ struct ServerError {
     public static var unknownError: ServerError{
         get {
             var error = ServerError()
-            error.code = ErrorType.unknown.rawValue
+            error.errorName = "Some thing went wrong please try again or connect the admin"
             return error
         }
     }
@@ -904,26 +884,17 @@ struct ServerError {
     }
     
     public init?(json: JSON) {
-//        guard let errorCode = json["code"].int else {
-//            return nil
-//        }
-//        code = errorCode
+
         errorName = ""
-        if let errorArray = json["error:"].array{
-            for error in errorArray{
-                errorName?.append("\n\(error)")
-            }
+        if let msg = json["message"].string{
+            errorName = msg
         }
         
-        if let errorArray = json["error"].array{
-            for error in errorArray{
-                if let msg = error.rawString(){
-                    errorName?.append("\n\(msg)")
-                }
-            }
+        if let msg = json["Data"].string{
+            errorName = msg
         }
         
-      
+    
         
         if let statusCode = json["status"].int{ status = statusCode}
     }

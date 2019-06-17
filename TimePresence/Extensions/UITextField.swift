@@ -30,9 +30,9 @@ extension UITextField {
         if (AppConfig.currentLanguage == .arabic) {
             self.textAlignment = .right
         }
-        self.textColor = AppColors.green
-        self.addTarget(self, action: #selector(startEditing), for: .editingChanged)
-        self.addTarget(self, action: #selector(endEdit), for: .editingDidEnd)
+//        self.textColor = AppColors.green
+//        self.addTarget(self, action: #selector(startEditing), for: .editingChanged)
+//        self.addTarget(self, action: #selector(endEdit), for: .editingDidEnd)
     }
     
     

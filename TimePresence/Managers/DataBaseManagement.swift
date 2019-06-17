@@ -230,7 +230,7 @@ class DatabaseManagement {
         var tasks:[Task] = []
         do {
             for task in try db!.prepare(self.tblTasks.filter(taskCompanyID == companyId)) {
-                let newTask = Task(ID: task[taskID], name: task[taskTitle],date:task[taskCreatedDate],projectId:task[taskProjectID],companyId:task[taskCompanyID])
+                let newTask = Task(ID: task[taskID], name: task[taskTitle],projectId:task[taskProjectID],companyId:task[taskCompanyID])
                 tasks.append(newTask)
             }
         } catch {
@@ -261,9 +261,9 @@ class DatabaseManagement {
     private let tblTasks = Table("Tasks")
     private let taskID = Expression<Int64>("id")
     private let taskCompanyID = Expression<Int64>("companyID")
-    private let taskProjectID = Expression<Int>("projectId")
+    private let taskProjectID = Expression<String>("projectId")
     private let taskTitle = Expression<String>("title")
-    private let taskCreatedDate = Expression<Date>("CreatedDate")
+//    private let taskCreatedDate = Expression<Date>("CreatedDate")
     
     
     func createTasksTable() {
@@ -273,7 +273,7 @@ class DatabaseManagement {
                 table.column(taskCompanyID, references: tblCompanies,companyID)
                 table.column(taskTitle ,unique: true)
                 table.column(taskProjectID)
-                table.column(taskCreatedDate)
+//                table.column(taskCreatedDate)
             })
             print("create Tasks table successfully")
         } catch {
@@ -284,7 +284,7 @@ class DatabaseManagement {
     
     func addTask(task:Task) -> Int64 {
         do {
-            let insert = tblTasks.insert(taskTitle <- task.name!,taskProjectID <- task.projectId!,taskCompanyID <- task.companyId!,taskCreatedDate <- task.date!)
+            let insert = tblTasks.insert(taskTitle <- task.name!,taskProjectID <- task.projectId!,taskCompanyID <- task.companyId!)
             if let id = try db?.run(insert){
                 print("Insert to tblHeader successfully userid \(id)")
                 return id
@@ -305,7 +305,7 @@ class DatabaseManagement {
         do {
             for task in try db!.prepare(self.tblTasks) {
             
-                let newTask = Task(ID: task[taskID], name:     task[taskTitle],date:task[taskCreatedDate],projectId:task[taskProjectID],companyId:task[taskCompanyID])
+                let newTask = Task(ID: task[taskID], name:     task[taskTitle],projectId:task[taskProjectID],companyId:task[taskCompanyID])
                 tasks.append(newTask)
             }
         } catch {
@@ -321,7 +321,7 @@ class DatabaseManagement {
         do{
             let tbl  = tblTasks.filter(taskID == id)
             if let task  = try db?.pluck(tbl){
-            let newTask = Task(ID: task[taskID], name:     task[taskTitle],date:task[taskCreatedDate],projectId:task[taskProjectID],companyId:task[taskCompanyID])
+            let newTask = Task(ID: task[taskID], name:     task[taskTitle],projectId:task[taskProjectID],companyId:task[taskCompanyID])
                 return newTask
             }
             return nil
@@ -498,7 +498,7 @@ class DatabaseManagement {
     private let lapURL = Expression<String>("URL")
     private let lapCompany = Expression<String>("Company")
     private let lapTaskId  = Expression<Int64>("taskId")
-    private let lapProjectId  = Expression<Int>("projectId")
+    private let lapProjectId  = Expression<String>("projectId")
     private let lapStartTime = Expression<Date>("startTime")
     private let lapEndTime = Expression<Date?>("endTime")
     private let seconds = Expression<Int?>("seconds")
@@ -585,7 +585,7 @@ class DatabaseManagement {
     func queryUnSyncedLaps(url:String,companyDB:String) -> [Lap]{
         var laps:[Lap] = []
         do {
-            for lap in try db!.prepare(self.tblLap.filter(lapURL == url && lapCompany == companyDB  && lapSynced == false)) {
+            for lap in try db!.prepare(self.tblLap.filter(lapURL == url && lapCompany == companyDB  && lapSynced == false && lapEndTime != nil)) {
                 let newLap =  Lap(ID: lap[LapId], SessionKey: lap[lapKey], url: lap[lapURL], company: lap[lapCompany], taskID: lap[lapTaskId], projectID: lap[lapProjectId], startTime: lap[lapStartTime], endTime: lap[lapEndTime], seconds: lap[seconds] ?? 0, mac: lap[lapMac], clientType: lap[lapClient], lat: lap[lapLat], long: lap[lapLong], userIP: lap[lapIP], type: lap[lapType], synced: lap[lapSynced], approved: lap[lapApproved])
                 laps.append(newLap)
             }

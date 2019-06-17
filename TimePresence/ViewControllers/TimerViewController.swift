@@ -28,6 +28,7 @@ class TimerViewController: AbstractController {
     
     var seconds:Int = 0
     var timer:Timer = Timer()
+    var syncTimer = Timer()
     var currentBackgroundDate:Date?
     var isTimerRunning = false
     var resumeTapped = false
@@ -132,10 +133,11 @@ class TimerViewController: AbstractController {
         super.viewDidLoad()
         self.actionsView.isHidden = true
         getCompanyProjects()
-        projectsDropDown.buttonAnchor = self.startButton
+        
         projectsDropDown.delegate = self
         projectsDropDown.tag = "projects"
         projectsDropDown.loadData = getCompanyProjects
+        setDataSource()
         
     }
     
@@ -144,6 +146,20 @@ class TimerViewController: AbstractController {
         fetchProjectListFormAPI()
         startApp()
         ActionSyncLocations.execute()
+        ActionSyncLaps.execute(false)
+        
+    }
+    
+    func setLocationTimer(){
+        if let interval = DataStore.shared.locationSyncPeriod , interval > 0{
+            if !syncTimer.isValid{
+//                Double(interval) *
+                syncTimer = Timer.scheduledTimer(timeInterval: Double(interval) * 60.0 , target: self, selector: #selector(getLocation), userInfo: nil, repeats: true)
+                syncTimer.fire()
+            }
+        }else{
+            syncTimer.invalidate()
+        }
     }
 
     func getCompanyProjects(){
@@ -158,6 +174,8 @@ class TimerViewController: AbstractController {
             if success{
                 self.projects = resutl
                 DataStore.shared.currentCompany?.projects = resutl
+                self.setDataSource()
+                self.setLocationTimer()
                 self.getCompanyProjects()
             }
             
@@ -168,10 +186,53 @@ class TimerViewController: AbstractController {
         
     }
     
+    func setDataSource(){
+        if DataStore.shared.currentCompany?.projects.count > 1{
+            self.projectsDropDown.buttonAnchor = self.startButton
+        }else{
+            self.startButton.addTarget(self, action: #selector(self.selectFirstProject), for: .touchUpInside)
+        }
+    }
+    
+    @objc func selectFirstProject(){
+        if let project = self.projects.first{
+        self.projectTitleLabel.text = project.name
+        selectedProject = project
+        start()
+        }
+    }
+    
     override func customizeView() {
         super.customizeView()
         self.startButton.setBackgroundColor(color: AppColors.green, forState: .normal)
         self.startButton.setBackgroundColor(color: AppColors.gray, forState: .disabled)
+        
+    }
+    
+    @objc func getLocation(){
+        
+        guard let location = DataStore.shared.myLocation else {return}
+        
+        let sessionKey = DataStore.shared.currentSession?.SessionKey ?? "0"
+        let company = DataStore.shared.currentCompany?.DB ?? "0"
+        let ip = DataStore.shared.currentSession?.userIP ?? "0"
+        let projectId = DataStore.shared.currentSession?.projectID ?? "0"
+        let date = Date()
+        let mac = DataStore.shared.currentSession?.mac ?? "0"
+        let lap = Lap()
+        lap.SessionKey = sessionKey
+        lap.mac = mac
+        lap.lat  = location.latitiued
+        lap.long = location.longtiued
+        lap.projectID = projectId
+        lap.company = company
+        lap.startTime = date
+        lap.synced = false
+        lap.userIP = ip
+        lap.userLocation = location
+        var locations = DataStore.shared.locations
+        locations.append(lap)
+        DataStore.shared.locations = locations
         
     }
     
@@ -261,7 +322,7 @@ class TimerViewController: AbstractController {
         newSession.clientType = "ios"
         newSession.mac = mac
         newSession.taskID = taskId
-        newSession.save()
+        newSession.save(value:"newSession")
         currentSession = newSession
     }
     
@@ -269,7 +330,7 @@ class TimerViewController: AbstractController {
         if let newSession = currentSession{
             newSession.endTime = Date()
             newSession.seconds = seconds
-            newSession.save()
+            newSession.save(value:"endSession")
         }
         currentSession = nil
         
@@ -318,7 +379,7 @@ class TimerViewController: AbstractController {
 //
 //
 //            }
-               self.showMessage(message: "Done", type: .success)
+               self.showMessage(message: "Your session have been saved", type: .success)
             self.state = .stoped
         }
         self.present(alert, animated: true, completion: nil)

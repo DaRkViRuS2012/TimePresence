@@ -16,7 +16,7 @@ class Lap:BaseModel{
     var url:String?
     var company:String?
     var taskID:Int64?
-    var projectID:Int?
+    var projectID:String?
     var startTime:Date?
     var endTime:Date?
     var seconds:Int = 0
@@ -35,7 +35,7 @@ class Lap:BaseModel{
     }
     
     init(ID:Int64?,SessionKey:String?,url:String?,company:String?
-        ,taskID:Int64?,projectID:Int?,startTime:Date?,endTime:Date?
+        ,taskID:Int64?,projectID:String?,startTime:Date?,endTime:Date?
         ,seconds:Int,mac:String?,clientType:String?,lat:String?,long:String?
         ,userIP:String?,type:String?,synced:Bool?,approved:Bool?) {
         self.ID = ID
@@ -69,7 +69,7 @@ class Lap:BaseModel{
         url = json["url"].string
         company = json["companyDB"].string
         taskID = json["taskID"].int64
-        projectID = json["projectId"].int
+        projectID = json["projectId"].string
         if let time = json["startTime"].string{
             startTime = DateHelper.getDateFromISOString(time)
         }
@@ -163,7 +163,9 @@ class Lap:BaseModel{
     }
     
     
-    func save(){
+    func save(value:String){
+        print(value)
+        print(self)
         if self.ID == nil{
             self.ID = DatabaseManagement.shared.addLap(lap: self)
         }else{

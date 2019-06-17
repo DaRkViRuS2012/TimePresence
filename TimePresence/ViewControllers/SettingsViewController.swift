@@ -34,6 +34,9 @@ class SettingsViewController: AbstractController {
         urlDropDown.buttonAnchor = urlButton
         urlDropDown.loadData = getServices
         urlDropDown.delegate = self
+        if let name = DataStore.shared.me?.username {
+            userLabel.text = name
+        }
         if let url = DataStore.shared.currentURL{
             self.urlLable.text = url.title
         }

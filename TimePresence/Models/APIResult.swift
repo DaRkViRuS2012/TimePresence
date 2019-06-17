@@ -16,6 +16,7 @@ public class APIResult<T:BaseModel>:BaseModel{
     public var data : Array<T>?
     public var error:Bool?
     public var message:String?
+    public var param:Param?
 
     public required init(json: JSON) {
         super.init(json: json)
@@ -23,6 +24,9 @@ public class APIResult<T:BaseModel>:BaseModel{
         error_Message = json["Data"].string
         if let array = json["Data"].array{
             data =  array.map{T(json:$0)}
+        }
+        if json["Params"] != JSON.null{
+            param = Param(json:json["Params"])
         }
     }
 
@@ -32,3 +36,6 @@ public class APIResult<T:BaseModel>:BaseModel{
     }
     
 }
+
+
+

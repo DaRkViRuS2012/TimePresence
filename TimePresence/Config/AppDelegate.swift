@@ -22,38 +22,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NotificationHelper.shared.initilizeNotification()
     
-        let timer =   Timer.scheduledTimer(timeInterval: 5.0 * 60.0 * 60.0 , target: self, selector: #selector(getLocation), userInfo: nil, repeats: true)
-        timer.fire()
+      
         
         return true
     }
     
-    @objc func getLocation(){
-        
-        guard let location = DataStore.shared.myLocation else {return}
-        
-        let sessionKey = DataStore.shared.currentSession?.SessionKey ?? "0"
-        let company = DataStore.shared.currentCompany?.DB ?? "0"
-        let ip = DataStore.shared.currentSession?.userIP ?? "0"
-        let projectId = DataStore.shared.currentSession?.projectID ?? 0
-        let date = Date()
-        let mac = DataStore.shared.currentSession?.mac ?? "0"
-        let lap = Lap()
-        lap.SessionKey = sessionKey
-        lap.mac = mac
-        lap.lat  = location.latitiued
-        lap.long = location.longtiued
-        lap.projectID = projectId
-        lap.company = company
-        lap.startTime = date
-        lap.synced = false
-        lap.userIP = ip
-        lap.userLocation = location
-        var locations = DataStore.shared.locations
-        locations.append(lap)
-        DataStore.shared.locations = locations
-        
-    }
+   
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

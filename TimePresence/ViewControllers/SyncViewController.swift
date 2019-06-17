@@ -32,7 +32,7 @@ class SyncViewController: AbstractController {
     
     @IBAction func sync(){
 
-        ActionSyncLaps.execute()
+        ActionSyncLaps.execute(true)
         ActionSyncLocations.execute()
       self.timeLabel.text = DateHelper.getISOStringFromDate(Date())
     }

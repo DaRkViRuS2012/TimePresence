@@ -13,16 +13,14 @@ class Task:BaseModel {
     
     var ID:Int64?
     var name:String?
-    var projectId:Int?
-    var date:Date?
+    var projectId:String?
     var userCode:String?
     var serviceId:Int64?
     var companyId:Int64?
     
-    init(ID:Int64?,name:String?,date:Date?,projectId:Int?,companyId:Int64?) {
+    init(ID:Int64?,name:String?,projectId:String?,companyId:Int64?) {
         self.ID = ID
         self.name = name
-        self.date = date
         self.companyId = companyId
         self.projectId = projectId
         super.init()
@@ -36,10 +34,8 @@ class Task:BaseModel {
         super.init(json: json)
         self.ID = json["ID"].int64
         self.name = json["Name"].string
-        self.projectId = json["ProjectId"].int
-        if let value  = json["START"].string{
-            date = DateHelper.getDateFromISOString(value)
-        }
+        self.projectId = json["ProjectId"].string
+        
     }
     
     override func dictionaryRepresentation() -> [String : Any] {
@@ -47,9 +43,7 @@ class Task:BaseModel {
         dictionary["ID"] = self.ID
         dictionary["ProjectId"] = projectId
         dictionary["Name"] = name
-        if let value = date{
-            dictionary["START"] = DateHelper.getISOStringFromDate(value)
-        }
+
         return dictionary
     }
      func save(){
@@ -82,5 +76,26 @@ class Task:BaseModel {
     
     override var description: String{
         return "\(id) \(name) \(projectId)"
+    }
+}
+
+
+
+public class Param:BaseModel {
+    
+    var interval:Int?
+ 
+    override init() {
+        super.init()
+    }
+    required init(json: JSON) {
+        super.init(json: json)
+        self.interval = json["Interval"].int
+    }
+    
+    override public func dictionaryRepresentation() -> [String : Any] {
+        var dictionary = super.dictionaryRepresentation()
+        dictionary["Interval"] = self.interval
+        return dictionary
     }
 }

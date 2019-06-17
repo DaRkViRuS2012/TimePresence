@@ -75,4 +75,16 @@ extension URLSViewController:UITableViewDelegate,UITableViewDataSource{
         DataStore.shared.currentURL = self.services[indexPath.row]
         getCompanies()
     }
+    
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == UITableViewCellEditingStyle.delete) {
+            let url = services[indexPath.row]
+            url.delete()
+            self.services = self.services.filter({$0.ID != url.ID})
+            tableView.reloadData()
+        }
+    }
+    
+
 }

@@ -51,7 +51,7 @@ class NewURLViewController: AbstractController {
             let url = urlTextField.text
             let service = Service(ID: nil, title: title, url: url, date: Date(), userCode: "1")
             service.save()
-            self.showMessage(message: "Done", type: .success)
+//            self.showMessage(message: "Done", type: .success)
             self.popOrDismissViewControllerAnimated(animated: true)
         }
     }

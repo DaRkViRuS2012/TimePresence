@@ -509,6 +509,8 @@ class AbstractController: UIViewController, UITextFieldDelegate, UIGestureRecogn
     // MARK: Show toast message
     /// Show toast message with key and type
     func showMessage(message: String, type: MessageType) {
+        showAlertMessage(message: message, type: type)
+        return
         // toast view measurments
         let toastOffset = CGFloat(48)
         let toastHeight = CGFloat(104)
@@ -538,7 +540,16 @@ class AbstractController: UIViewController, UITextFieldDelegate, UIGestureRecogn
         self.view.showToast(toastView, duration: 2.0, position: .center, completion: nil)
     }
     
-    func showAlertMessage(message: String,title:String) {
+    func showAlertMessage(message: String,type: MessageType) {
+        var title = ""
+        switch type {
+        case .success:
+            title = "Success"
+        case .error:
+            title = "Error"
+        case .warning:
+            title = "Warrning"
+        }
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
