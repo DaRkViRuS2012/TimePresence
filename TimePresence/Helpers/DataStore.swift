@@ -215,9 +215,9 @@ class DataStore :NSObject {
             saveBaseModelObject(object: _current_session, withKey: CACHE_KEY_CURRENT_SESSION)
         }
         get{
-            if (_current_session == nil) {
+//            if (_current_session == nil) {
                 _current_session = loadBaseModelObjectForKey(key: CACHE_KEY_CURRENT_SESSION)
-            }
+//            }
             return _current_session
         }
     }

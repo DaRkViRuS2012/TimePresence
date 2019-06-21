@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AppConfig.setTabBarStyle()
         
         NotificationHelper.shared.initilizeNotification()
-    
+        print(DataStore.shared.currentSession)
       
         
         return true
@@ -49,6 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        print(DataStore.shared.currentSession)
     }
 
 

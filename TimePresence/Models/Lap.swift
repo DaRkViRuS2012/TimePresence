@@ -83,8 +83,12 @@ class Lap:BaseModel{
         lat = json["latitudes"].string
         if json["userLocation"] != JSON.null{
             userLocation = Location(json: json["userLocation"])
-            lat = userLocation?.latitiued
-            long = userLocation?.longtiued
+            if userLocation?.latitiued != nil{
+                lat = userLocation?.latitiued
+            }
+            if userLocation?.longtiued != nil{
+                long = userLocation?.longtiued
+            }
         }
         userIP = json["userIP"].string
         type = json["workType"].string
@@ -181,6 +185,6 @@ class Lap:BaseModel{
     
     
     override var description: String{
-        return "\(SessionKey) \(url) \(company) Synced = \(synced) start=\(startTime) end=\(endTime) type=\(type)"
+        return "\(SessionKey) \(url) \(company) Synced = \(synced) start=\(startTime) end=\(endTime) type=\(type) lat=\(lat) long= \(long) userloction lat=\(userLocation?.latitiued) long= \(userLocation?.longtiued)"
     }
 }

@@ -303,10 +303,10 @@ class TimerViewController: AbstractController {
             let companyDb = DataStore.shared.currentCompany?.DB,
             let taskId = selectedProject?.ID,
             let projectId = selectedProject?.projectId,
-            let ip = WifiHelper.getIP(),
             let mac = WifiHelper.getDeviceID(),
             let sessionKey = self.sessionKey else{return}
         
+        let ip = WifiHelper.getIP() ?? "0.0.0.0"
         let location = DataStore.shared.myLocation ?? Location()
         let newSession = Lap()
         newSession.url = url
